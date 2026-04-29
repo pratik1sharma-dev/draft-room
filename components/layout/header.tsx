@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
+import { signOut } from '@/lib/actions/auth'
 
 export async function Header() {
   let user = null
@@ -36,9 +37,17 @@ export async function Header() {
 
         <div className="flex items-center gap-3">
           {user ? (
-            <Button size="sm" asChild>
-              <Link href="/dashboard">Dashboard</Link>
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/post-job">Post a Job</Link>
+              </Button>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/dashboard">Dashboard</Link>
+              </Button>
+              <form action={signOut}>
+                <Button variant="outline" size="sm" type="submit">Sign out</Button>
+              </form>
+            </div>
           ) : (
             <>
               <Button variant="ghost" size="sm" asChild>
