@@ -2,27 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { z } from 'zod'
-
-export const clientOnboardingSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  phone: z.string().optional(),
-  city: z.string().min(1, 'City is required'),
-  state: z.string().min(1, 'State is required'),
-  firm_name: z.string().optional(),
-  project_types: z.array(z.string()).default([]),
-})
-
-export const draftmanOnboardingSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  phone: z.string().optional(),
-  city: z.string().min(1, 'City is required'),
-  state: z.string().min(1, 'State is required'),
-  skills: z.array(z.string()).min(1, 'Select at least one skill'),
-  hourly_rate: z.number().min(1, 'Hourly rate must be greater than 0'),
-  experience_years: z.number().min(0),
-  linkedin_url: z.string().url('Invalid LinkedIn URL').optional().or(z.literal('')),
-})
+import { clientOnboardingSchema, draftmanOnboardingSchema } from '@/lib/validations/onboarding'
 
 export async function completeClientOnboarding(
   _prev: { error: string } | null,
@@ -53,7 +33,7 @@ export async function completeClientOnboarding(
 
   const { error: profileError } = await supabase.from('profiles').upsert({
     user_id: user.id, firm_name: firm_name ?? null, project_types,
-  })
+  }, { onConflict: 'user_id' })
   if (profileError) return { error: profileError.message }
 
   redirect('/dashboard')
@@ -91,7 +71,7 @@ export async function completeDraftmanOnboarding(
   const { error: profileError } = await supabase.from('profiles').upsert({
     user_id: user.id, skills, hourly_rate, experience_years,
     linkedin_url: linkedin_url || null, availability: true,
-  })
+  }, { onConflict: 'user_id' })
   if (profileError) return { error: profileError.message }
 
   redirect('/dashboard')
