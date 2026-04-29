@@ -50,6 +50,23 @@ export default async function DraftsmanProfilePage({
               <Link href={`/draftsmen/${id}/hire`}>Hire Directly →</Link>
             </Button>
           )}
+
+          {!user && (
+            <div className="text-right">
+              <Link
+                href="/signup?role=client"
+                className="inline-block bg-[var(--color-blueprint-accent)] text-white text-sm font-medium px-4 py-2 rounded-md hover:opacity-90 transition-opacity"
+              >
+                Sign up to hire →
+              </Link>
+              <p className="text-xs text-[var(--color-blueprint-text-muted)] mt-1.5">
+                Already have an account?{' '}
+                <Link href="/login" className="text-[var(--color-blueprint-accent)] hover:underline">
+                  Log in
+                </Link>
+              </p>
+            </div>
+          )}
         </div>
 
         {profile.bio && (
