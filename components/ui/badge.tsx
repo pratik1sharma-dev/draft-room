@@ -14,7 +14,7 @@ export function Badge({ children, variant = 'skill', className }: BadgeProps) {
         variant === 'verified' && 'bg-blue-500/20 text-blue-400 border border-blue-500/30',
         variant === 'founding' && 'bg-amber-500/20 text-amber-400 border border-amber-500/30',
         variant === 'available' && 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
-        variant === 'skill' && 'bg-white/5 text-[var(--color-blueprint-text-secondary)] border border-white/10',
+        variant === 'skill' && 'bg-[var(--color-blueprint-overlay)] text-[var(--color-blueprint-text-secondary)] border border-[var(--color-blueprint-border-strong)]',
         className
       )}
     >

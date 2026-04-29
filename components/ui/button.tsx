@@ -13,7 +13,7 @@ const buttonClasses = (variant: ButtonProps['variant'], size: ButtonProps['size'
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-blueprint-accent)]',
     'disabled:pointer-events-none disabled:opacity-40',
     variant === 'primary' && 'bg-[var(--color-blueprint-accent)] text-white hover:bg-[var(--color-blueprint-accent-hover)]',
-    variant === 'outline' && 'border border-white/10 text-[var(--color-blueprint-text-primary)] hover:border-[var(--color-blueprint-accent)] hover:text-[var(--color-blueprint-accent)]',
+    variant === 'outline' && 'border border-[var(--color-blueprint-border-strong)] text-[var(--color-blueprint-text-primary)] hover:border-[var(--color-blueprint-accent)] hover:text-[var(--color-blueprint-accent)]',
     variant === 'ghost' && 'text-[var(--color-blueprint-text-secondary)] hover:text-[var(--color-blueprint-text-primary)]',
     size === 'sm' && 'h-8 px-3 text-sm',
     size === 'md' && 'h-10 px-4 text-sm',

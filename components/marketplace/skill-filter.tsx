@@ -43,7 +43,7 @@ export function SkillFilter({ type }: SkillFilterProps) {
             defaultValue={searchParams.get('city') ?? ''}
             onBlur={e => handleChange('city', e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleChange('city', (e.target as HTMLInputElement).value)}
-            className="h-10 w-32 px-3 rounded-md text-sm bg-[var(--color-blueprint-surface)] border border-white/10 text-[var(--color-blueprint-text-primary)] placeholder:text-[var(--color-blueprint-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-blueprint-accent)]"
+            className="h-10 w-32 px-3 rounded-md text-sm bg-[var(--color-blueprint-surface)] border border-[var(--color-blueprint-border-strong)] text-[var(--color-blueprint-text-primary)] placeholder:text-[var(--color-blueprint-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-blueprint-accent)]"
           />
           <Select
             className="w-36"

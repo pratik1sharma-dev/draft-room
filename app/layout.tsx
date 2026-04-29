@@ -2,15 +2,16 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
+import { ACTIVE_THEME } from '@/lib/config/theme'
 
 export const metadata: Metadata = {
-  title: "DraftRoom — India's Drafting Room for Architects",
-  description: 'Connect with skilled draftsmen. Get your drawings done.',
+  title: 'DraftRoom — Hire CAD Draftsmen for Architecture Projects in India',
+  description: 'Find AutoCAD, Revit, SketchUp, structural, and interiors drafters across India. Verified portfolios, secure payments.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme={ACTIVE_THEME}>
       <body className="min-h-screen flex flex-col">
         <Header />
         <div className="pt-16 flex-1">

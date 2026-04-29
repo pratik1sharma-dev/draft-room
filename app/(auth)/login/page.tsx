@@ -54,7 +54,7 @@ export default function LoginPage() {
 
       <div className="relative my-6">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-white/10" />
+          <div className="w-full border-t border-[var(--color-blueprint-border-strong)]" />
         </div>
         <div className="relative flex justify-center">
           <span className="px-3 bg-[var(--color-blueprint-surface)] text-[var(--color-blueprint-text-muted)] text-xs">or</span>

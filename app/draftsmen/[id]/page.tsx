@@ -58,7 +58,7 @@ export default async function DraftsmanProfilePage({
           </p>
         )}
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-white/8">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-[var(--color-blueprint-border)]">
           <div>
             <p className="blueprint-label mb-1">Hourly Rate</p>
             <p className="text-lg font-semibold text-[var(--color-blueprint-accent)]">
@@ -108,7 +108,7 @@ export default async function DraftsmanProfilePage({
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="aspect-video bg-[var(--color-blueprint-surface-2)] rounded-md overflow-hidden border border-white/8 hover:border-[var(--color-blueprint-accent)]/40 transition-colors flex items-center justify-center"
+                className="aspect-video bg-[var(--color-blueprint-surface-2)] rounded-md overflow-hidden border border-[var(--color-blueprint-border)] hover:border-[var(--color-blueprint-accent)]/40 transition-colors flex items-center justify-center"
               >
                 <img src={url} alt={`Portfolio ${i + 1}`} className="w-full h-full object-cover" />
               </a>

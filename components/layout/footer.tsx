@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export function Footer() {
   return (
-    <footer className="border-t border-white/8 py-12 px-6 mt-20">
+    <footer className="border-t border-[var(--color-blueprint-border)] py-12 px-6 mt-20">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-8">
         <div>
           <p className="font-bold text-[var(--color-blueprint-text-primary)] mb-1">DraftRoom</p>
@@ -10,12 +10,10 @@ export function Footer() {
             India's Drafting Room for Architects.
           </p>
           <a
-            href="https://discord.gg/draftroom"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="mailto:hello@draftroom.in"
             className="inline-flex items-center gap-2 mt-4 text-sm text-[var(--color-blueprint-accent)] hover:underline"
           >
-            Join our Discord community →
+            hello@draftroom.in →
           </a>
         </div>
 
@@ -34,7 +32,7 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto mt-8 pt-8 border-t border-white/8 text-xs text-[var(--color-blueprint-text-muted)]">
+      <div className="max-w-7xl mx-auto mt-8 pt-8 border-t border-[var(--color-blueprint-border)] text-xs text-[var(--color-blueprint-text-muted)]">
         <p>© 2026 DraftRoom. All rights reserved.</p>
       </div>
     </footer>

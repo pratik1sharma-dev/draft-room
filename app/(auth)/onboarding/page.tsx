@@ -43,7 +43,7 @@ function OnboardingForm() {
         <select
           name="state"
           required
-          className="h-10 px-3 rounded-md text-sm bg-[var(--color-blueprint-surface)] border border-white/10 text-[var(--color-blueprint-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-blueprint-accent)]"
+          className="h-10 px-3 rounded-md text-sm bg-[var(--color-blueprint-surface)] border border-[var(--color-blueprint-border-strong)] text-[var(--color-blueprint-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-blueprint-accent)]"
         >
           <option value="">State</option>
           {INDIA_STATES.map(s => <option key={s} value={s}>{s}</option>)}

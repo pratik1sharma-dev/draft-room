@@ -31,7 +31,7 @@ export function MobileMenu({ isLoggedIn, role }: MobileMenuProps) {
 
       {open && (
         <div
-          className="absolute top-16 left-0 right-0 bg-[var(--color-blueprint-bg)] border-b border-white/8 px-6 py-4 space-y-1 z-40"
+          className="absolute top-16 left-0 right-0 bg-[var(--color-blueprint-bg)] border-b border-[var(--color-blueprint-border)] px-6 py-4 space-y-1 z-40"
           onClick={() => setOpen(false)}
         >
           <Link href="/draftsmen" className="block py-2.5 text-sm text-[var(--color-blueprint-text-secondary)] hover:text-[var(--color-blueprint-text-primary)]">
@@ -44,7 +44,7 @@ export function MobileMenu({ isLoggedIn, role }: MobileMenuProps) {
             Resources
           </Link>
 
-          <div className="border-t border-white/8 pt-3 mt-3 space-y-1">
+          <div className="border-t border-[var(--color-blueprint-border)] pt-3 mt-3 space-y-1">
             {isLoggedIn ? (
               <>
                 {role !== 'draftsman' && (

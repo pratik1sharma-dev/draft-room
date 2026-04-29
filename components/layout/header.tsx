@@ -23,7 +23,7 @@ export async function Header() {
   const isDraftsman = userRole === 'draftsman'
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-white/8 bg-[var(--color-blueprint-bg)]/80 backdrop-blur-sm">
+    <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-[var(--color-blueprint-border)] bg-[var(--color-blueprint-bg)]/80 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 shrink-0">
           <div className="w-6 h-6 border-2 border-[var(--color-blueprint-accent)] rounded-sm flex items-center justify-center">

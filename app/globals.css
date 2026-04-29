@@ -1,18 +1,53 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap');
 @import "tailwindcss";
 
-@theme inline {
-  /* Blueprint color palette */
+/* ═══════════════════════════════════════════════════════════
+   THEMES — values applied via data-theme on <html>
+   Switch by editing: lib/config/theme.ts → ACTIVE_THEME
+   ═══════════════════════════════════════════════════════════ */
+
+/* Dark theme — Blueprint */
+:root,
+[data-theme="dark"] {
   --color-blueprint-bg: #0A0F1E;
   --color-blueprint-surface: #111827;
   --color-blueprint-surface-2: #1a2235;
-  --color-blueprint-accent: #2D7DD2;
-  --color-blueprint-accent-hover: #1E6BBF;
+  --color-blueprint-accent: #0F6D73;
+  --color-blueprint-accent-hover: #0B555A;
   --color-blueprint-text-primary: #F9FAFB;
   --color-blueprint-text-secondary: #9CA3AF;
   --color-blueprint-text-muted: #8896A8;
+  --color-blueprint-border: rgba(255, 255, 255, 0.08);
+  --color-blueprint-border-strong: rgba(255, 255, 255, 0.12);
+  --color-blueprint-overlay: rgba(255, 255, 255, 0.04);
+  --color-blueprint-grid: rgba(15, 109, 115, 0.12);
+}
 
-  /* Typography */
+/* Light theme — Architectural */
+[data-theme="light"] {
+  --color-blueprint-bg: #F7F5F1;
+  --color-blueprint-surface: #FFFFFF;
+  --color-blueprint-surface-2: #FBFAF7;
+  --color-blueprint-accent: #0F6D73;
+  --color-blueprint-accent-hover: #0B555A;
+  --color-blueprint-text-primary: #1F2933;
+  --color-blueprint-text-secondary: #667085;
+  --color-blueprint-text-muted: #8896A8;
+  --color-blueprint-border: #D9D6D1;
+  --color-blueprint-border-strong: #C4C0BA;
+  --color-blueprint-overlay: #F0EDE8;
+  --color-blueprint-grid: rgba(15, 109, 115, 0.08);
+}
+
+@theme inline {
+  --color-blueprint-bg: var(--color-blueprint-bg);
+  --color-blueprint-surface: var(--color-blueprint-surface);
+  --color-blueprint-surface-2: var(--color-blueprint-surface-2);
+  --color-blueprint-accent: var(--color-blueprint-accent);
+  --color-blueprint-accent-hover: var(--color-blueprint-accent-hover);
+  --color-blueprint-text-primary: var(--color-blueprint-text-primary);
+  --color-blueprint-text-secondary: var(--color-blueprint-text-secondary);
+  --color-blueprint-text-muted: var(--color-blueprint-text-muted);
   --font-sans: 'Space Grotesk', system-ui, sans-serif;
 }
 
@@ -26,10 +61,9 @@
 }
 
 @layer components {
-  /* Blueprint card: thin border with corner accent marks */
   .blueprint-card {
     background-color: var(--color-blueprint-surface);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--color-blueprint-border);
     border-radius: 0.5rem;
     position: relative;
     overflow: hidden;
@@ -59,13 +93,11 @@
     opacity: 0.6;
   }
 
-  /* Blueprint dot-grid background texture */
   .grid-bg {
-    background-image: radial-gradient(circle, rgba(45, 125, 210, 0.12) 1px, transparent 1px);
+    background-image: radial-gradient(circle, var(--color-blueprint-grid) 1px, transparent 1px);
     background-size: 32px 32px;
   }
 
-  /* Mono section label — "// FEATURES" or "REF: 001" */
   .blueprint-label {
     font-size: 0.75rem;
     font-family: monospace;
@@ -73,4 +105,9 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
+
+  /* Theme-aware border utilities */
+  .theme-border { border-color: var(--color-blueprint-border); }
+  .theme-border-strong { border-color: var(--color-blueprint-border-strong); }
+  .theme-surface { background-color: var(--color-blueprint-overlay); }
 }

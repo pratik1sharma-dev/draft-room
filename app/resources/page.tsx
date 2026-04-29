@@ -146,7 +146,7 @@ export default function ResourcesPage() {
       <section className="mb-12">
         <div className="flex items-center gap-3 mb-4">
           <p className="blueprint-label">// FREELANCING IN INDIA</p>
-          <span className="text-xs text-[var(--color-blueprint-text-muted)] border border-white/10 rounded-full px-2 py-0.5">
+          <span className="text-xs text-[var(--color-blueprint-text-muted)] border border-[var(--color-blueprint-border-strong)] rounded-full px-2 py-0.5">
             Articles coming soon
           </span>
         </div>

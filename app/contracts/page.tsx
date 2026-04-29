@@ -70,7 +70,7 @@ export default async function ContractsPage() {
               </div>
 
               {contract.status === 'active' && userData.role === 'client' && (
-                <div className="mt-4 pt-4 border-t border-white/8">
+                <div className="mt-4 pt-4 border-t border-[var(--color-blueprint-border)]">
                   <form action={async () => {
                     'use server'
                     await markContractComplete(contract.id)

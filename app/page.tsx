@@ -10,7 +10,7 @@ const features = [
   {
     ref: 'REF: 002',
     title: 'Secure Payments',
-    desc: 'Pay via UPI, cards, or NEFT. Formal invoices generated automatically for every project.',
+    desc: 'Pay via UPI or cards. Funds held in escrow until work is accepted — no payment disputes.',
   },
   {
     ref: 'REF: 003',
@@ -22,8 +22,8 @@ const features = [
 const steps = [
   { n: '01', title: 'Post a job or browse draftsmen', desc: 'Describe your project or search directly by skill and city.' },
   { n: '02', title: 'Review and hire', desc: 'See portfolios, reviews, and rates. Accept an application or send a direct offer.' },
-  { n: '03', title: 'Collaborate and deliver', desc: 'Chat, share files, and track delivery — all on platform.' },
-  { n: '04', title: 'Pay and review', desc: 'Pay securely via UPI or cards. Get a formal invoice. Leave a review.' },
+  { n: '03', title: 'Share requirements and track progress', desc: 'Share your brief, drawings, and reference files. Agree on milestones before work starts.' },
+  { n: '04', title: 'Approve and pay', desc: 'Review deliverables, request revisions if needed, then release payment.' },
 ]
 
 export default function LandingPage() {
@@ -32,18 +32,18 @@ export default function LandingPage() {
       {/* Hero */}
       <section className="relative pt-24 pb-20 px-6 grid-bg">
         <div className="max-w-5xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 border border-white/10 rounded-full px-4 py-1.5 text-sm text-[var(--color-blueprint-text-secondary)] mb-10">
+          <div className="inline-flex items-center gap-2 border border-[var(--color-blueprint-border-strong)] rounded-full px-4 py-1.5 text-sm text-[var(--color-blueprint-text-secondary)] mb-10">
             <span className="w-2 h-2 rounded-full bg-[var(--color-blueprint-accent)] animate-pulse" />
             Now live — India's first dedicated drafting marketplace
           </div>
 
           <h1 className="text-5xl md:text-7xl font-bold text-[var(--color-blueprint-text-primary)] tracking-tight mb-6 leading-tight">
-            India's Drafting Room<br />
-            <span className="text-[var(--color-blueprint-accent)]">for Architects.</span>
+            Hire verified CAD draftsmen<br />
+            <span className="text-[var(--color-blueprint-accent)]">for architecture projects.</span>
           </h1>
 
           <p className="text-xl text-[var(--color-blueprint-text-secondary)] max-w-2xl mx-auto mb-10">
-            Connect with skilled draftsmen. Get your drawings done.
+            AutoCAD, Revit, SketchUp, structural drawings, interiors — skilled draftsmen across India, ready to hire.
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center">
@@ -55,7 +55,14 @@ export default function LandingPage() {
             </Button>
           </div>
 
-          <p className="text-xs text-[var(--color-blueprint-text-muted)] mt-6">
+          <div className="flex flex-wrap gap-3 justify-center mt-8">
+            <span className="text-xs text-[var(--color-blueprint-text-muted)] border border-[var(--color-blueprint-border)] rounded-full px-3 py-1">Verified portfolios</span>
+            <span className="text-xs text-[var(--color-blueprint-text-muted)] border border-[var(--color-blueprint-border)] rounded-full px-3 py-1">Escrow payments</span>
+            <span className="text-xs text-[var(--color-blueprint-text-muted)] border border-[var(--color-blueprint-border)] rounded-full px-3 py-1">India-focused</span>
+            <span className="text-xs text-[var(--color-blueprint-text-muted)] border border-[var(--color-blueprint-border)] rounded-full px-3 py-1">No commission until MVP</span>
+          </div>
+
+          <p className="text-xs text-[var(--color-blueprint-text-muted)] mt-5">
             First 100 draftsmen and clients earn a{' '}
             <span className="text-amber-400">Founding Member</span> badge.
           </p>
@@ -63,7 +70,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features */}
-      <section className="py-20 px-6 border-t border-white/8">
+      <section className="py-20 px-6 border-t border-[var(--color-blueprint-border)]">
         <div className="max-w-5xl mx-auto">
           <p className="blueprint-label mb-3">// WHY DRAFTROOM</p>
           <h2 className="text-3xl font-bold text-[var(--color-blueprint-text-primary)] mb-12 max-w-xl">
@@ -82,7 +89,7 @@ export default function LandingPage() {
       </section>
 
       {/* How it works */}
-      <section className="py-20 px-6 border-t border-white/8 bg-[var(--color-blueprint-surface)]/40">
+      <section className="py-20 px-6 border-t border-[var(--color-blueprint-border)] bg-[var(--color-blueprint-surface)]/40">
         <div className="max-w-5xl mx-auto">
           <p className="blueprint-label mb-3">// HOW IT WORKS</p>
           <h2 className="text-3xl font-bold text-[var(--color-blueprint-text-primary)] mb-12">Four steps to done</h2>
@@ -101,7 +108,7 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-6 border-t border-white/8">
+      <section className="py-20 px-6 border-t border-[var(--color-blueprint-border)]">
         <div className="max-w-3xl mx-auto text-center">
           <p className="blueprint-label mb-3">// GET STARTED</p>
           <h2 className="text-3xl font-bold text-[var(--color-blueprint-text-primary)] mb-4">

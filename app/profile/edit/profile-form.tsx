@@ -59,7 +59,7 @@ export function ProfileForm({ role, user, profile }: ProfileFormProps) {
             <select
               name="state"
               defaultValue={user.state ?? ''}
-              className="w-full h-10 px-3 rounded-md text-sm bg-[var(--color-blueprint-surface)] border border-white/10 text-[var(--color-blueprint-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-blueprint-accent)]"
+              className="w-full h-10 px-3 rounded-md text-sm bg-[var(--color-blueprint-surface)] border border-[var(--color-blueprint-border-strong)] text-[var(--color-blueprint-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-blueprint-accent)]"
             >
               <option value="">Select state</option>
               {STATES.map(s => <option key={s} value={s}>{s}</option>)}
