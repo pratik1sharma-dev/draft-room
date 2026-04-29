@@ -9,10 +9,7 @@ export async function getJobs(filters?: {
 
   let query = supabase
     .from('jobs')
-    .select(`
-      *,
-      users!inner(id, name, city, state)
-    `)
+    .select('*, client:client_id(id, name, city, state)')
     .eq('status', 'open')
     .order('created_at', { ascending: false })
 
@@ -28,7 +25,8 @@ export async function getJobs(filters?: {
 
   const { data, error } = await query
   if (error) return []
-  return data
+  // normalise to { ...job, users: { name, city } } shape used by JobCard
+  return (data ?? []).map((j: any) => ({ ...j, users: j.client }))
 }
 
 export async function getJob(jobId: string) {
@@ -36,15 +34,12 @@ export async function getJob(jobId: string) {
 
   const { data, error } = await supabase
     .from('jobs')
-    .select(`
-      *,
-      users!inner(id, name, city, state)
-    `)
+    .select('*, client:client_id(id, name, city, state)')
     .eq('id', jobId)
     .single()
 
   if (error) return null
-  return data
+  return { ...data, users: (data as any).client }
 }
 
 export async function getClientJobs(clientId: string) {
