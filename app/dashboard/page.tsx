@@ -26,9 +26,18 @@ export default async function DashboardPage() {
   return (
     <main className="max-w-5xl mx-auto px-6 py-12">
       <p className="blueprint-label mb-2">// DASHBOARD</p>
-      <h1 className="text-2xl font-bold text-[var(--color-blueprint-text-primary)] mb-8">
-        Welcome back, {userData.name}
-      </h1>
+      <div className="flex items-center gap-3 mb-8">
+        <h1 className="text-2xl font-bold text-[var(--color-blueprint-text-primary)]">
+          Welcome back, {userData.name}
+        </h1>
+        <span className={`text-xs font-medium px-2.5 py-1 rounded-full border ${
+          userData.role === 'draftsman'
+            ? 'bg-[var(--color-blueprint-accent)]/10 text-[var(--color-blueprint-accent)] border-[var(--color-blueprint-accent)]/30'
+            : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+        }`}>
+          {userData.role === 'draftsman' ? 'Draftsman' : 'Client'}
+        </span>
+      </div>
 
       {isClient
         ? <ClientDashboard userId={user.id} />
