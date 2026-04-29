@@ -49,6 +49,7 @@ async function ClientDashboard({ userId }: { userId: string }) {
         <Button asChild><Link href="/post-job">Post a Job →</Link></Button>
         <Button variant="outline" asChild><Link href="/draftsmen">Browse Draftsmen</Link></Button>
         <Button variant="outline" asChild><Link href="/applications">View Applications</Link></Button>
+        <Button variant="ghost" asChild><Link href="/profile/edit">Edit Profile</Link></Button>
       </div>
 
       <div className="grid grid-cols-3 gap-4">
@@ -93,6 +94,7 @@ async function DraftsmanDashboard({ userId }: { userId: string }) {
         <Button asChild><Link href="/jobs">Browse Jobs →</Link></Button>
         <Button variant="outline" asChild><Link href="/applications">My Applications</Link></Button>
         <Button variant="outline" asChild><Link href="/contracts">My Contracts</Link></Button>
+        <Button variant="ghost" asChild><Link href="/profile/edit">Edit Profile</Link></Button>
       </div>
 
       <div className="grid grid-cols-3 gap-4">
