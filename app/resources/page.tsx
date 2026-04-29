@@ -34,21 +34,25 @@ const INDIA_STANDARDS = [
     title: 'NBC 2016 — National Building Code',
     description: 'The reference standard for building design and construction across India.',
     tag: 'Codes',
+    link: 'https://bis.gov.in/product/national-building-code-of-india-2016-nbc-2016/',
   },
   {
     title: 'SP 7 — Explanatory Handbook on NBC',
     description: 'Simplified explanations of NBC provisions — useful for day-to-day drafting.',
     tag: 'Codes',
+    link: 'https://bis.gov.in',
   },
   {
     title: 'IS 962 — Code of Practice for Architectural Drawing',
     description: 'BIS standard covering line types, notation, and sheet layout.',
     tag: 'Drawing Standards',
+    link: 'https://bis.gov.in/product/is-962/',
   },
   {
     title: 'IS 1477 — Symbols for Building Materials',
     description: 'Standard symbols used in architectural and structural drawings.',
     tag: 'Drawing Standards',
+    link: 'https://bis.gov.in',
   },
 ]
 
@@ -78,7 +82,6 @@ const FREELANCE_TIPS = [
 export default function ResourcesPage() {
   return (
     <main className="max-w-5xl mx-auto px-6 py-12">
-      {/* Header */}
       <div className="mb-12">
         <p className="blueprint-label mb-2">// KNOWLEDGE BASE</p>
         <h1 className="text-3xl font-bold text-[var(--color-blueprint-text-primary)] mb-4">
@@ -119,28 +122,43 @@ export default function ResourcesPage() {
         <p className="blueprint-label mb-4">// INDIAN STANDARDS & CODES</p>
         <div className="grid md:grid-cols-2 gap-4">
           {INDIA_STANDARDS.map(item => (
-            <div key={item.title} className="blueprint-card p-5">
+            <a
+              key={item.title}
+              href={item.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="blueprint-card p-5 hover:border-[var(--color-blueprint-accent)]/40 transition-colors group block"
+            >
               <div className="flex items-start justify-between mb-2">
-                <h3 className="font-semibold text-[var(--color-blueprint-text-primary)]">{item.title}</h3>
+                <h3 className="font-semibold text-[var(--color-blueprint-text-primary)] group-hover:text-[var(--color-blueprint-accent)] transition-colors">
+                  {item.title}
+                </h3>
                 <Badge variant="founding">{item.tag}</Badge>
               </div>
               <p className="text-sm text-[var(--color-blueprint-text-secondary)]">{item.description}</p>
-            </div>
+              <p className="text-xs text-[var(--color-blueprint-accent)] mt-3">BIS portal →</p>
+            </a>
           ))}
         </div>
       </section>
 
       {/* Freelance Tips */}
       <section className="mb-12">
-        <p className="blueprint-label mb-4">// FREELANCING IN INDIA</p>
+        <div className="flex items-center gap-3 mb-4">
+          <p className="blueprint-label">// FREELANCING IN INDIA</p>
+          <span className="text-xs text-[var(--color-blueprint-text-muted)] border border-white/10 rounded-full px-2 py-0.5">
+            Articles coming soon
+          </span>
+        </div>
         <div className="grid md:grid-cols-2 gap-4">
           {FREELANCE_TIPS.map(item => (
-            <div key={item.title} className="blueprint-card p-5">
+            <div key={item.title} className="blueprint-card p-5 opacity-70">
               <div className="flex items-start justify-between mb-2">
                 <h3 className="font-semibold text-[var(--color-blueprint-text-primary)]">{item.title}</h3>
                 <Badge variant="available">{item.tag}</Badge>
               </div>
               <p className="text-sm text-[var(--color-blueprint-text-secondary)]">{item.description}</p>
+              <p className="text-xs text-[var(--color-blueprint-text-muted)] mt-3">Coming soon</p>
             </div>
           ))}
         </div>

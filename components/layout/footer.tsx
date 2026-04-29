@@ -34,9 +34,8 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto mt-8 pt-8 border-t border-white/8 flex justify-between text-xs text-[var(--color-blueprint-text-muted)]">
+      <div className="max-w-7xl mx-auto mt-8 pt-8 border-t border-white/8 text-xs text-[var(--color-blueprint-text-muted)]">
         <p>© 2026 DraftRoom. All rights reserved.</p>
-        <p className="blueprint-label">REF: DRAFTROOM-MVP</p>
       </div>
     </footer>
   )

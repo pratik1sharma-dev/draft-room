@@ -36,17 +36,27 @@ export function SkillFilter({ type }: SkillFilterProps) {
       </Select>
 
       {type === 'draftsmen' && (
-        <Select
-          className="w-36"
-          value={searchParams.get('max_rate') ?? ''}
-          onChange={e => handleChange('max_rate', e.target.value)}
-        >
-          <option value="">Any rate</option>
-          <option value="500">Up to ₹500/hr</option>
-          <option value="1000">Up to ₹1000/hr</option>
-          <option value="2000">Up to ₹2000/hr</option>
-          <option value="5000">Up to ₹5000/hr</option>
-        </Select>
+        <>
+          <input
+            type="text"
+            placeholder="City..."
+            defaultValue={searchParams.get('city') ?? ''}
+            onBlur={e => handleChange('city', e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleChange('city', (e.target as HTMLInputElement).value)}
+            className="h-10 w-32 px-3 rounded-md text-sm bg-[var(--color-blueprint-surface)] border border-white/10 text-[var(--color-blueprint-text-primary)] placeholder:text-[var(--color-blueprint-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-blueprint-accent)]"
+          />
+          <Select
+            className="w-36"
+            value={searchParams.get('max_rate') ?? ''}
+            onChange={e => handleChange('max_rate', e.target.value)}
+          >
+            <option value="">Any rate</option>
+            <option value="500">Up to ₹500/hr</option>
+            <option value="1000">Up to ₹1000/hr</option>
+            <option value="2000">Up to ₹2000/hr</option>
+            <option value="5000">Up to ₹5000/hr</option>
+          </Select>
+        </>
       )}
 
       {type === 'jobs' && (
@@ -61,7 +71,7 @@ export function SkillFilter({ type }: SkillFilterProps) {
         </Select>
       )}
 
-      {(searchParams.get('skill') || searchParams.get('max_rate') || searchParams.get('budget_type')) && (
+      {(searchParams.get('skill') || searchParams.get('max_rate') || searchParams.get('budget_type') || searchParams.get('city')) && (
         <Button
           variant="ghost"
           size="sm"
