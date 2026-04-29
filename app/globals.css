@@ -1,26 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Blueprint color palette */
+  --color-blueprint-bg: #0A0F1E;
+  --color-blueprint-surface: #111827;
+  --color-blueprint-surface-2: #1a2235;
+  --color-blueprint-accent: #2D7DD2;
+  --color-blueprint-accent-hover: #1E6BBF;
+  --color-blueprint-text-primary: #F9FAFB;
+  --color-blueprint-text-secondary: #9CA3AF;
+  --color-blueprint-text-muted: #6B7280;
+
+  /* Typography */
+  --font-sans: 'Space Grotesk', system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    background-color: var(--color-blueprint-bg);
+    color: var(--color-blueprint-text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Blueprint card: thin border with corner accent marks */
+  .blueprint-card {
+    background-color: var(--color-blueprint-surface);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .blueprint-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-top: 2px solid var(--color-blueprint-accent);
+    border-left: 2px solid var(--color-blueprint-accent);
+    opacity: 0.6;
+  }
+
+  .blueprint-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-bottom: 2px solid var(--color-blueprint-accent);
+    border-right: 2px solid var(--color-blueprint-accent);
+    opacity: 0.6;
+  }
+
+  /* Blueprint dot-grid background texture */
+  .grid-bg {
+    background-image: radial-gradient(circle, rgba(45, 125, 210, 0.12) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  /* Mono section label — "// FEATURES" or "REF: 001" */
+  .blueprint-label {
+    font-size: 0.75rem;
+    font-family: monospace;
+    color: var(--color-blueprint-accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
 }
