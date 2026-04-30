@@ -21,7 +21,7 @@ export function Footer() {
           <div className="space-y-2">
             <p className="text-[var(--color-blueprint-text-primary)] font-medium">Platform</p>
             <Link href="/draftsmen" className="block hover:text-[var(--color-blueprint-text-primary)]">Find Draftsmen</Link>
-            <Link href="/jobs" className="block hover:text-[var(--color-blueprint-text-primary)]">Browse Jobs</Link>
+            <Link href="/projects" className="block hover:text-[var(--color-blueprint-text-primary)]">Browse Projects</Link>
             <Link href="/resources" className="block hover:text-[var(--color-blueprint-text-primary)]">Resources</Link>
           </div>
           <div className="space-y-2">

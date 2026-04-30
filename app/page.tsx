@@ -20,7 +20,7 @@ const features = [
 ]
 
 const steps = [
-  { n: '01', title: 'Post a job or browse draftsmen', desc: 'Describe your project or search directly by skill and city.' },
+  { n: '01', title: 'Post a project or browse draftsmen', desc: 'Describe your project or search directly by skill and city.' },
   { n: '02', title: 'Review and hire', desc: 'See portfolios, reviews, and rates. Accept an application or send a direct offer.' },
   { n: '03', title: 'Share requirements and track progress', desc: 'Share your brief, drawings, and reference files. Agree on milestones before work starts.' },
   { n: '04', title: 'Approve and pay', desc: 'Review deliverables, request revisions if needed, then release payment.' },
@@ -48,7 +48,7 @@ export default function LandingPage() {
 
           <div className="flex flex-wrap gap-4 justify-center">
             <Button size="lg" asChild>
-              <Link href="/signup?role=client">Post a Job — It's Free</Link>
+              <Link href="/signup?role=client">Post a Project — It's Free</Link>
             </Button>
             <Button variant="outline" size="lg" asChild>
               <Link href="/signup?role=draftsman">Join as Draftsman</Link>
@@ -119,7 +119,7 @@ export default function LandingPage() {
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Button size="lg" asChild>
-              <Link href="/signup?role=client">Post a Job</Link>
+              <Link href="/signup?role=client">Post a Project</Link>
             </Button>
             <Button variant="outline" size="lg" asChild>
               <Link href="/draftsmen">Browse Draftsmen</Link>

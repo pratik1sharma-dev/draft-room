@@ -36,8 +36,8 @@ export async function Header() {
           <Link href="/draftsmen" className="text-sm text-[var(--color-blueprint-text-secondary)] hover:text-[var(--color-blueprint-text-primary)] transition-colors">
             Find Draftsmen
           </Link>
-          <Link href="/jobs" className="text-sm text-[var(--color-blueprint-text-secondary)] hover:text-[var(--color-blueprint-text-primary)] transition-colors">
-            Browse Jobs
+          <Link href="/projects" className="text-sm text-[var(--color-blueprint-text-secondary)] hover:text-[var(--color-blueprint-text-primary)] transition-colors">
+            Browse Projects
           </Link>
           <Link href="/resources" className="text-sm text-[var(--color-blueprint-text-secondary)] hover:text-[var(--color-blueprint-text-primary)] transition-colors">
             Resources
@@ -51,11 +51,11 @@ export async function Header() {
               <>
                 {isDraftsman ? (
                   <Button variant="ghost" size="sm" asChild>
-                    <Link href="/jobs">Find Jobs</Link>
+                    <Link href="/projects">Find Projects</Link>
                   </Button>
                 ) : (
                   <Button variant="ghost" size="sm" asChild>
-                    <Link href="/post-job">Post a Job</Link>
+                    <Link href="/post-project">Post a Project</Link>
                   </Button>
                 )}
                 <Button variant="ghost" size="sm" asChild>

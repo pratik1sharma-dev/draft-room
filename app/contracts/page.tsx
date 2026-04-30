@@ -61,9 +61,9 @@ export default async function ContractsPage() {
         <div className="blueprint-card p-8 text-center">
           <p className="text-[var(--color-blueprint-text-secondary)] mb-4">No contracts yet.</p>
           {userData.role === 'client' ? (
-            <Button asChild><Link href="/post-job">Post a job →</Link></Button>
+            <Button asChild><Link href="/post-project">Post a project →</Link></Button>
           ) : (
-            <Button asChild><Link href="/jobs">Browse jobs →</Link></Button>
+            <Button asChild><Link href="/projects">Browse projects →</Link></Button>
           )}
         </div>
       ) : (

@@ -55,7 +55,7 @@ async function ClientDashboard({ userId }: { userId: string }) {
   return (
     <div className="space-y-8">
       <div className="flex gap-3 flex-wrap">
-        <Button asChild><Link href="/post-job">Post a Job →</Link></Button>
+        <Button asChild><Link href="/post-project">Post a Project →</Link></Button>
         <Button variant="outline" asChild><Link href="/draftsmen">Browse Draftsmen</Link></Button>
         <Button variant="outline" asChild><Link href="/applications">View Applications</Link></Button>
         <Button variant="ghost" asChild><Link href="/profile/edit">Edit Profile</Link></Button>
@@ -100,7 +100,7 @@ async function DraftsmanDashboard({ userId }: { userId: string }) {
   return (
     <div className="space-y-8">
       <div className="flex gap-3 flex-wrap">
-        <Button asChild><Link href="/jobs">Browse Jobs →</Link></Button>
+        <Button asChild><Link href="/projects">Browse Projects →</Link></Button>
         <Button variant="outline" asChild><Link href="/applications">My Applications</Link></Button>
         <Button variant="outline" asChild><Link href="/contracts">My Contracts</Link></Button>
         <Button variant="ghost" asChild><Link href="/profile/edit">Edit Profile</Link></Button>

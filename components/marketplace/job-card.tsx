@@ -21,7 +21,7 @@ export function JobCard({ job }: JobCardProps) {
   )
 
   return (
-    <Link href={`/jobs/${job.id}`} className="blueprint-card p-5 block hover:border-[var(--color-blueprint-accent)]/40 transition-colors group">
+    <Link href={`/projects/${job.id}`} className="blueprint-card p-5 block hover:border-[var(--color-blueprint-accent)]/40 transition-colors group">
       <div className="flex items-start justify-between mb-2">
         <h3 className="font-semibold text-[var(--color-blueprint-text-primary)] group-hover:text-[var(--color-blueprint-accent)] transition-colors">
           {job.title}

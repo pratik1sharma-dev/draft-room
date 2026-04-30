@@ -47,7 +47,7 @@ async function ClientApplications({ userId }: { userId: string }) {
     return (
       <div className="blueprint-card p-8 text-center">
         <p className="text-[var(--color-blueprint-text-secondary)] mb-4">No active jobs yet.</p>
-        <Button asChild><Link href="/post-job">Post your first job →</Link></Button>
+        <Button asChild><Link href="/post-project">Post your first job →</Link></Button>
       </div>
     )
   }
@@ -64,7 +64,7 @@ async function ClientApplications({ userId }: { userId: string }) {
       {jobsWithApplications.map(({ job, applications }) => (
         <div key={job.id}>
           <div className="flex items-center justify-between mb-3">
-            <Link href={`/jobs/${job.id}`} className="font-semibold text-[var(--color-blueprint-text-primary)] hover:text-[var(--color-blueprint-accent)] transition-colors">
+            <Link href={`/projects/${job.id}`} className="font-semibold text-[var(--color-blueprint-text-primary)] hover:text-[var(--color-blueprint-accent)] transition-colors">
               {job.title}
             </Link>
             <Badge variant={job.status === 'open' ? 'available' : 'skill'}>
@@ -139,7 +139,7 @@ async function DraftsmanApplications({ userId }: { userId: string }) {
     return (
       <div className="blueprint-card p-8 text-center">
         <p className="text-[var(--color-blueprint-text-secondary)] mb-4">You haven&apos;t applied to any jobs yet.</p>
-        <Button asChild><Link href="/jobs">Browse open jobs →</Link></Button>
+        <Button asChild><Link href="/projects">Browse open jobs →</Link></Button>
       </div>
     )
   }
@@ -150,7 +150,7 @@ async function DraftsmanApplications({ userId }: { userId: string }) {
         <div key={app.id} className="blueprint-card p-5">
           <div className="flex items-start justify-between flex-wrap gap-3">
             <div>
-              <Link href={`/jobs/${app.jobs.id}`} className="font-medium text-[var(--color-blueprint-text-primary)] hover:text-[var(--color-blueprint-accent)] transition-colors">
+              <Link href={`/projects/${app.jobs.id}`} className="font-medium text-[var(--color-blueprint-text-primary)] hover:text-[var(--color-blueprint-accent)] transition-colors">
                 {app.jobs.title}
               </Link>
               <p className="text-sm text-[var(--color-blueprint-text-muted)] mt-0.5">

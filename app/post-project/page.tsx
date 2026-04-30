@@ -18,7 +18,7 @@ export default function PostJobPage() {
     <main className="max-w-2xl mx-auto px-6 py-12">
       <p className="blueprint-label mb-2">// NEW PROJECT</p>
       <h1 className="text-2xl font-bold text-[var(--color-blueprint-text-primary)] mb-8">
-        Post a Job
+        Post a Project
       </h1>
 
       <form action={formAction} className="space-y-6">

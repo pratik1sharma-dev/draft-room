@@ -35,7 +35,7 @@ export default async function JobsPage(props: Props) {
       <div className="mb-8">
         <p className="blueprint-label mb-2">// OPEN PROJECTS</p>
         <h1 className="text-3xl font-bold text-[var(--color-blueprint-text-primary)] mb-4">
-          Browse Jobs
+          Browse Projects
         </h1>
         <Suspense fallback={null}>
           <SkillFilter type="jobs" />

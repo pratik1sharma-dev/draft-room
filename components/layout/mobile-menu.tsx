@@ -37,8 +37,8 @@ export function MobileMenu({ isLoggedIn, role }: MobileMenuProps) {
           <Link href="/draftsmen" className="block py-2.5 text-sm text-[var(--color-blueprint-text-secondary)] hover:text-[var(--color-blueprint-text-primary)]">
             Find Draftsmen
           </Link>
-          <Link href="/jobs" className="block py-2.5 text-sm text-[var(--color-blueprint-text-secondary)] hover:text-[var(--color-blueprint-text-primary)]">
-            Browse Jobs
+          <Link href="/projects" className="block py-2.5 text-sm text-[var(--color-blueprint-text-secondary)] hover:text-[var(--color-blueprint-text-primary)]">
+            Browse Projects
           </Link>
           <Link href="/resources" className="block py-2.5 text-sm text-[var(--color-blueprint-text-secondary)] hover:text-[var(--color-blueprint-text-primary)]">
             Resources
@@ -48,13 +48,13 @@ export function MobileMenu({ isLoggedIn, role }: MobileMenuProps) {
             {isLoggedIn ? (
               <>
                 {role !== 'draftsman' && (
-                  <Link href="/post-job" className="block py-2.5 text-sm text-[var(--color-blueprint-text-secondary)] hover:text-[var(--color-blueprint-text-primary)]">
-                    Post a Job
+                  <Link href="/post-project" className="block py-2.5 text-sm text-[var(--color-blueprint-text-secondary)] hover:text-[var(--color-blueprint-text-primary)]">
+                    Post a Project
                   </Link>
                 )}
                 {role === 'draftsman' && (
-                  <Link href="/jobs" className="block py-2.5 text-sm text-[var(--color-blueprint-text-secondary)] hover:text-[var(--color-blueprint-text-primary)]">
-                    Find Jobs
+                  <Link href="/projects" className="block py-2.5 text-sm text-[var(--color-blueprint-text-secondary)] hover:text-[var(--color-blueprint-text-primary)]">
+                    Find Projects
                   </Link>
                 )}
                 <Link href="/dashboard" className="block py-2.5 text-sm text-[var(--color-blueprint-text-secondary)] hover:text-[var(--color-blueprint-text-primary)]">
