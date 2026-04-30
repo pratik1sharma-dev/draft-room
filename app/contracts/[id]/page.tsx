@@ -203,14 +203,9 @@ export default async function ContractDetailPage({
             </span>.
           </p>
           {isClient && (
-            <>
-              <p className="text-xs text-[var(--color-blueprint-text-muted)] mb-4">
-                Escrow payment coming soon. For now, confirm to start work.
-              </p>
-              <form action={async () => { 'use server'; await startWork(id) }}>
-                <Button type="submit">Confirm and start work →</Button>
-              </form>
-            </>
+            <form action={async () => { 'use server'; await startWork(id) }}>
+              <Button type="submit">Confirm and start work →</Button>
+            </form>
           )}
           {isDraftsman && (
             <p className="text-sm text-[var(--color-blueprint-text-muted)]">

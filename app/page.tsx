@@ -9,8 +9,8 @@ const features = [
   },
   {
     ref: 'REF: 002',
-    title: 'Secure Payments',
-    desc: 'Pay via UPI or cards. Funds held in escrow until work is accepted — no payment disputes.',
+    title: 'Structured Workflow',
+    desc: 'Agree on exact deliverables before work starts. Both sides confirm the brief — no surprises, no disputes.',
   },
   {
     ref: 'REF: 003',
@@ -23,7 +23,7 @@ const steps = [
   { n: '01', title: 'Post a project or browse draftsmen', desc: 'Describe your project or search directly by skill and city.' },
   { n: '02', title: 'Review and hire', desc: 'See portfolios, reviews, and rates. Accept an application or send a direct offer.' },
   { n: '03', title: 'Share requirements and track progress', desc: 'Share your brief, drawings, and reference files. Agree on milestones before work starts.' },
-  { n: '04', title: 'Approve and pay', desc: 'Review deliverables, request revisions if needed, then release payment.' },
+  { n: '04', title: 'Review and approve', desc: 'Review deliverables, request revisions if needed, then mark the project complete.' },
 ]
 
 export default function LandingPage() {
@@ -57,7 +57,7 @@ export default function LandingPage() {
 
           <div className="flex flex-wrap gap-3 justify-center mt-8">
             <span className="text-xs text-[var(--color-blueprint-text-muted)] border border-[var(--color-blueprint-border)] rounded-full px-3 py-1">Verified portfolios</span>
-            <span className="text-xs text-[var(--color-blueprint-text-muted)] border border-[var(--color-blueprint-border)] rounded-full px-3 py-1">Escrow payments</span>
+            <span className="text-xs text-[var(--color-blueprint-text-muted)] border border-[var(--color-blueprint-border)] rounded-full px-3 py-1">Structured delivery</span>
             <span className="text-xs text-[var(--color-blueprint-text-muted)] border border-[var(--color-blueprint-border)] rounded-full px-3 py-1">India-focused</span>
             <span className="text-xs text-[var(--color-blueprint-text-muted)] border border-[var(--color-blueprint-border)] rounded-full px-3 py-1">No commission until MVP</span>
           </div>
