@@ -147,11 +147,48 @@ export async function sendDirectOffer(
     client_id: user.id,
     draftsman_id: draftsmanId,
     agreed_rate: budgetAmount,
+    status: 'offer_sent',
   })
 
   if (contractError) return { error: contractError.message }
 
   redirect('/contracts')
+}
+
+export async function acceptContract(contractId: string): Promise<{ error: string } | null> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  const { error } = await supabase
+    .from('contracts')
+    .update({ status: 'active' })
+    .eq('id', contractId)
+    .eq('draftsman_id', user.id)
+    .eq('status', 'pending_draftsman')
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/contracts')
+  return null
+}
+
+export async function declineContract(contractId: string): Promise<{ error: string } | null> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  const { error } = await supabase
+    .from('contracts')
+    .update({ status: 'declined' })
+    .eq('id', contractId)
+    .eq('draftsman_id', user.id)
+    .eq('status', 'pending_draftsman')
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/contracts')
+  return null
 }
 
 export async function markContractComplete(contractId: string): Promise<{ error: string } | null> {
