@@ -1,21 +1,43 @@
-'use client'
-
-import { useActionState } from 'react'
-import { useParams, useSearchParams } from 'next/navigation'
-import { sendDirectOffer } from '@/lib/actions/applications'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Select } from '@/components/ui/select'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+import { HireForm } from './hire-form'
 
 export const dynamic = 'force-dynamic'
 
-export default function DirectHirePage() {
-  const params = useParams()
-  const searchParams = useSearchParams()
-  const draftsmanId = params.id as string
-  const jobId = searchParams.get('job_id')
-  const [state, formAction, isPending] = useActionState(sendDirectOffer, null)
+export default async function DirectHirePage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ job_id?: string }>
+}) {
+  const { id: draftsmanId } = await params
+  const { job_id: preselectedJobId } = await searchParams
+
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
+
+  const { data: userData } = await supabase
+    .from('users')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  if (userData?.role !== 'client') redirect(`/draftsmen/${draftsmanId}`)
+
+  const { data: draftsmanUser } = await supabase
+    .from('users')
+    .select('name')
+    .eq('id', draftsmanId)
+    .single()
+
+  const { data: jobs } = await supabase
+    .from('jobs')
+    .select('id, title, budget_amount, budget_type')
+    .eq('client_id', user.id)
+    .eq('status', 'open')
+    .order('created_at', { ascending: false })
 
   return (
     <main className="max-w-xl mx-auto px-6 py-12">
@@ -24,63 +46,12 @@ export default function DirectHirePage() {
         Send a Direct Offer
       </h1>
 
-      <form action={formAction} className="space-y-5 blueprint-card p-6">
-        <input type="hidden" name="draftsman_id" value={draftsmanId} />
-        {jobId && <input type="hidden" name="job_id" value={jobId} />}
-
-        {jobId ? (
-          <div className="p-4 rounded-lg bg-[var(--color-blueprint-overlay)] border border-[var(--color-blueprint-border-strong)]">
-            <p className="text-sm text-[var(--color-blueprint-text-secondary)]">
-              You're hiring this draftsman for your existing job. The project title, description, and budget from that job will be used automatically.
-            </p>
-          </div>
-        ) : (
-          <>
-            <div>
-              <label className="block text-sm text-[var(--color-blueprint-text-secondary)] mb-1.5">
-                Project title
-              </label>
-              <Input name="title" placeholder="e.g. Site plan drafting for commercial building" required />
-            </div>
-
-            <div>
-              <label className="block text-sm text-[var(--color-blueprint-text-secondary)] mb-1.5">
-                Project description
-              </label>
-              <Textarea
-                name="description"
-                placeholder="Describe the work, deliverables, and timeline..."
-                className="min-h-[120px]"
-                required
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm text-[var(--color-blueprint-text-secondary)] mb-1.5">
-                  Budget type
-                </label>
-                <Select name="budget_type" defaultValue="fixed">
-                  <option value="fixed">Fixed price</option>
-                  <option value="hourly">Hourly</option>
-                </Select>
-              </div>
-              <div>
-                <label className="block text-sm text-[var(--color-blueprint-text-secondary)] mb-1.5">
-                  Amount (₹)
-                </label>
-                <Input name="budget_amount" type="number" min="1" placeholder="e.g. 8000" required />
-              </div>
-            </div>
-          </>
-        )}
-
-        {state?.error && <p className="text-red-400 text-sm">{state.error}</p>}
-
-        <Button type="submit" className="w-full" disabled={isPending}>
-          {isPending ? 'Sending offer...' : 'Send offer →'}
-        </Button>
-      </form>
+      <HireForm
+        draftsmanId={draftsmanId}
+        draftsmanName={draftsmanUser?.name ?? 'this draftsman'}
+        existingJobs={jobs ?? []}
+        preselectedJobId={preselectedJobId}
+      />
     </main>
   )
 }
