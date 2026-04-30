@@ -12,12 +12,23 @@ export async function createJob(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
+  // Support both old form (single budget_amount) and new AI form (budget_min/budget_max)
+  const budgetAmount = formData.get('budget_amount')
+    ? Number(formData.get('budget_amount'))
+    : Math.round((Number(formData.get('budget_min')) + Number(formData.get('budget_max'))) / 2)
+
+  // Deliverables from AI form (newline-separated textarea) or empty
+  const deliverablesText = formData.get('deliverables_text') as string | null
+  const deliverables = deliverablesText
+    ? deliverablesText.split('\n').map(s => s.trim()).filter(Boolean)
+    : []
+
   const result = jobSchema.safeParse({
     title: formData.get('title'),
     description: formData.get('description'),
-    skills_required: formData.getAll('skills_required'),
-    budget_type: formData.get('budget_type'),
-    budget_amount: Number(formData.get('budget_amount')),
+    skills_required: formData.getAll('skills') as string[] || formData.getAll('skills_required') as string[],
+    budget_type: formData.get('budget_type') ?? 'fixed',
+    budget_amount: budgetAmount,
     deadline: formData.get('deadline') || undefined,
   })
 
@@ -29,13 +40,14 @@ export async function createJob(
       client_id: user.id,
       ...result.data,
       deadline: result.data.deadline || null,
+      attachments: deliverables,
     })
     .select()
     .single()
 
   if (error) return { error: error.message }
 
-  redirect(`/jobs/${job.id}?posted=true`)
+  redirect(`/projects/${job.id}?posted=true`)
 }
 
 export async function updateJobStatus(

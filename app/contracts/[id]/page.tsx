@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { MessageForm } from './message-form'
 import { TermsForm } from './terms-form'
-import { SubmitWorkForm, RevisionForm } from './action-forms'
+import { SubmitWorkForm, RevisionForm, ReferenceFilesForm } from './action-forms'
 import {
   acceptOffer, declineOffer, agreeToTerms,
   startWork, approveWork, acknowledgeRevision, cancelContract
@@ -150,6 +150,7 @@ export default async function ContractDetailPage({
               </p>
               <div className="space-y-3">
                 <MessageForm contractId={id} />
+                {isClient && <ReferenceFilesForm contractId={id} />}
                 {isDraftsman && (
                   <TermsForm contractId={id} defaultAmount={c.agreed_rate} />
                 )}
@@ -223,7 +224,7 @@ export default async function ContractDetailPage({
               <p className="text-sm text-[var(--color-blueprint-text-secondary)] mb-4">
                 Work is underway. Submit when your deliverables are ready.
               </p>
-              <SubmitWorkForm contractId={id} />
+              <SubmitWorkForm contractId={id} agreedDeliverables={c.agreed_deliverables ?? null} />
             </>
           )}
           {isClient && (
