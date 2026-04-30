@@ -20,7 +20,7 @@ async function JobsGrid({ searchParams }: Props) {
     <>
       {jobs.length === 0 ? (
         <div className="py-16 text-center text-[var(--color-blueprint-text-secondary)]">
-          No jobs found matching your filters.
+          No projects found matching your filters.
         </div>
       ) : (
         jobs.map((job: any) => <JobCard key={job.id} job={job} />)
@@ -46,7 +46,7 @@ export default async function JobsPage(props: Props) {
         <Suspense
           fallback={
             <div className="py-16 text-center text-[var(--color-blueprint-text-secondary)]">
-              Loading jobs...
+              Loading projects...
             </div>
           }
         >

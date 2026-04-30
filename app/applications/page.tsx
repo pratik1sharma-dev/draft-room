@@ -46,8 +46,8 @@ async function ClientApplications({ userId }: { userId: string }) {
   if (openJobs.length === 0) {
     return (
       <div className="blueprint-card p-8 text-center">
-        <p className="text-[var(--color-blueprint-text-secondary)] mb-4">No active jobs yet.</p>
-        <Button asChild><Link href="/post-project">Post your first job →</Link></Button>
+        <p className="text-[var(--color-blueprint-text-secondary)] mb-4">No active projects yet.</p>
+        <Button asChild><Link href="/post-project">Post your first project →</Link></Button>
       </div>
     )
   }
@@ -138,8 +138,8 @@ async function DraftsmanApplications({ userId }: { userId: string }) {
   if (applications.length === 0) {
     return (
       <div className="blueprint-card p-8 text-center">
-        <p className="text-[var(--color-blueprint-text-secondary)] mb-4">You haven&apos;t applied to any jobs yet.</p>
-        <Button asChild><Link href="/projects">Browse open jobs →</Link></Button>
+        <p className="text-[var(--color-blueprint-text-secondary)] mb-4">You haven&apos;t applied to any projects yet.</p>
+        <Button asChild><Link href="/projects">Browse open projects →</Link></Button>
       </div>
     )
   }
