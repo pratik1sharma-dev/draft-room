@@ -23,7 +23,7 @@ const PROJECT_TYPES = [
 
 const SKILLS = ['AutoCAD', 'Revit', 'SketchUp', '3D Rendering', 'Structural Drawings', 'BIM']
 
-export function SpecForm() {
+export function SpecForm({ hireAfter }: { hireAfter?: string }) {
   const [step, setStep] = useState<'intake' | 'review'>('intake')
   const [spec, setSpec] = useState<ProjectSpec | null>(null)
   const [aiError, setAiError] = useState<string | null>(null)
@@ -208,9 +208,11 @@ export function SpecForm() {
 
       {postState?.error && <p className="text-red-400 text-sm">{postState.error}</p>}
 
+      {hireAfter && <input type="hidden" name="hire_after" value={hireAfter} />}
+
       <div className="flex gap-3">
         <Button type="submit" disabled={isPosting}>
-          {isPosting ? 'Posting...' : 'Post project →'}
+          {isPosting ? 'Posting...' : hireAfter ? 'Post and send offer →' : 'Post project →'}
         </Button>
         <Button type="button" variant="ghost" onClick={() => setStep('intake')}>
           Regenerate

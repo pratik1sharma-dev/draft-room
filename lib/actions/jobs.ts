@@ -47,6 +47,9 @@ export async function createJob(
 
   if (error) return { error: error.message }
 
+  const hireAfter = formData.get('hire_after') as string | null
+  if (hireAfter) redirect(`/draftsmen/${hireAfter}/hire?job_id=${job.id}`)
+
   redirect(`/projects/${job.id}?posted=true`)
 }
 

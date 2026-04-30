@@ -3,9 +3,6 @@
 import { useActionState, useState } from 'react'
 import { sendDirectOffer } from '@/lib/actions/applications'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Select } from '@/components/ui/select'
 
 interface Job {
   id: string
@@ -65,58 +62,15 @@ export function HireForm({ draftsmanId, draftsmanName, existingJobs, preselected
             </label>
           ))}
 
-          <label
-            className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
-              isNew
-                ? 'border-[var(--color-blueprint-accent)] bg-[var(--color-blueprint-accent)]/5'
-                : 'border-[var(--color-blueprint-border)] hover:border-[var(--color-blueprint-border-strong)]'
-            }`}
+          <a
+            href={`/post-project?hire_after=${draftsmanId}`}
+            className="flex items-center gap-3 p-3 rounded-lg border border-[var(--color-blueprint-border)] hover:border-[var(--color-blueprint-accent)]/50 transition-colors"
           >
-            <input
-              type="radio"
-              name="_job_select"
-              value="__new__"
-              checked={isNew}
-              onChange={() => setSelectedJobId('__new__')}
-              className="accent-[var(--color-blueprint-accent)]"
-            />
-            <p className="text-sm text-[var(--color-blueprint-text-secondary)]">+ Create a new project</p>
-          </label>
+            <span className="text-sm text-[var(--color-blueprint-text-secondary)]">+ Create a new project</span>
+            <span className="ml-auto text-xs text-[var(--color-blueprint-text-muted)]">AI-powered →</span>
+          </a>
         </div>
       </div>
-
-      {isNew && (
-        <div className="space-y-4 pt-2">
-          <div>
-            <label className="block text-sm text-[var(--color-blueprint-text-secondary)] mb-1.5">Project title</label>
-            <Input name="title" placeholder="e.g. Site plan drafting for commercial building" required />
-          </div>
-
-          <div>
-            <label className="block text-sm text-[var(--color-blueprint-text-secondary)] mb-1.5">Project description</label>
-            <Textarea
-              name="description"
-              placeholder="Describe the work, deliverables, and timeline..."
-              className="min-h-[100px]"
-              required
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-[var(--color-blueprint-text-secondary)] mb-1.5">Budget type</label>
-              <Select name="budget_type" defaultValue="fixed">
-                <option value="fixed">Fixed price</option>
-                <option value="hourly">Hourly</option>
-              </Select>
-            </div>
-            <div>
-              <label className="block text-sm text-[var(--color-blueprint-text-secondary)] mb-1.5">Amount (₹)</label>
-              <Input name="budget_amount" type="number" min="1" placeholder="e.g. 8000" required />
-            </div>
-          </div>
-        </div>
-      )}
 
       {state?.error && <p className="text-red-400 text-sm">{state.error}</p>}
 
