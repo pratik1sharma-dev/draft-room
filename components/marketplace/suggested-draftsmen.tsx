@@ -9,9 +9,10 @@ interface SuggestedDraftsmenProps {
     is_verified: boolean
     users: { id: string; name: string; city: string | null }
   }>
+  jobId: string
 }
 
-export function SuggestedDraftsmen({ draftsmen }: SuggestedDraftsmenProps) {
+export function SuggestedDraftsmen({ draftsmen, jobId }: SuggestedDraftsmenProps) {
   if (draftsmen.length === 0) return null
 
   return (
@@ -24,7 +25,7 @@ export function SuggestedDraftsmen({ draftsmen }: SuggestedDraftsmenProps) {
         {draftsmen.map(d => (
           <Link
             key={d.user_id}
-            href={`/draftsmen/${d.user_id}`}
+            href={`/draftsmen/${d.user_id}/hire?job_id=${jobId}`}
             className="blueprint-card p-4 flex items-center justify-between hover:border-[var(--color-blueprint-accent)]/40 transition-colors"
           >
             <div>

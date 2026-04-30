@@ -133,7 +133,7 @@ export default async function JobDetailPage({
         </div>
       </div>
 
-      {isOwner && <SuggestedDraftsmen draftsmen={suggestedDraftsmen as any} />}
+      {isOwner && <SuggestedDraftsmen draftsmen={suggestedDraftsmen as any} jobId={id} />}
     </main>
   )
 }

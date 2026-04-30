@@ -105,48 +105,60 @@ export async function sendDirectOffer(
   if (!user) redirect('/login')
 
   const draftsmanId = formData.get('draftsman_id') as string
-  const title = formData.get('title') as string
-  const description = formData.get('description') as string
-  const budgetAmount = Number(formData.get('budget_amount'))
-  const budgetType = formData.get('budget_type') as 'fixed' | 'hourly'
+  const existingJobId = formData.get('job_id') as string | null
 
-  if (!title || title.length < 5) return { error: 'Title must be at least 5 characters' }
-  if (!description || description.length < 20) return { error: 'Description must be at least 20 characters' }
-  if (!budgetAmount || budgetAmount < 1) return { error: 'Budget is required' }
+  let jobId: string
+  let agreedRate: number
 
-  const { data: job, error: jobError } = await supabase
-    .from('jobs')
-    .insert({
-      client_id: user.id,
-      title,
-      description,
-      skills_required: [],
-      budget_type: budgetType,
-      budget_amount: budgetAmount,
-      status: 'in_progress',
-    })
-    .select()
-    .single()
+  if (existingJobId) {
+    // Hiring for an existing job — fetch its details
+    const { data: job, error: jobError } = await supabase
+      .from('jobs')
+      .select('id, budget_amount, status')
+      .eq('id', existingJobId)
+      .eq('client_id', user.id)
+      .single()
 
-  if (jobError) return { error: jobError.message }
+    if (jobError || !job) return { error: 'Job not found or you do not own it' }
 
-  const { error: appError } = await supabase
-    .from('applications')
-    .insert({
-      job_id: job.id,
-      draftsman_id: draftsmanId,
-      cover_note: 'Direct hire offer',
-      proposed_rate: budgetAmount,
-      status: 'accepted',
-    })
+    jobId = job.id
+    agreedRate = job.budget_amount
+  } else {
+    // No existing job — create one from the form
+    const title = formData.get('title') as string
+    const description = formData.get('description') as string
+    const budgetAmount = Number(formData.get('budget_amount'))
+    const budgetType = formData.get('budget_type') as 'fixed' | 'hourly'
 
-  if (appError) return { error: appError.message }
+    if (!title || title.length < 5) return { error: 'Title must be at least 5 characters' }
+    if (!description || description.length < 20) return { error: 'Description must be at least 20 characters' }
+    if (!budgetAmount || budgetAmount < 1) return { error: 'Budget is required' }
+
+    const { data: job, error: jobError } = await supabase
+      .from('jobs')
+      .insert({
+        client_id: user.id,
+        title,
+        description,
+        skills_required: [],
+        budget_type: budgetType,
+        budget_amount: budgetAmount,
+        status: 'open',
+      })
+      .select()
+      .single()
+
+    if (jobError) return { error: jobError.message }
+
+    jobId = job.id
+    agreedRate = budgetAmount
+  }
 
   const { error: contractError } = await supabase.from('contracts').insert({
-    job_id: job.id,
+    job_id: jobId,
     client_id: user.id,
     draftsman_id: draftsmanId,
-    agreed_rate: budgetAmount,
+    agreed_rate: agreedRate,
     status: 'offer_sent',
   })
 
