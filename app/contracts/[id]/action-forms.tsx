@@ -20,6 +20,11 @@ export function SubmitWorkForm({
   const [note, setNote] = useState('')
   const [verified, setVerified] = useState(false)
 
+  // Parse deliverables into a checklist (assumes comma or semicolon separated)
+  const deliverableItems = agreedDeliverables 
+    ? agreedDeliverables.split(/[;,]|\n/).map(s => s.trim()).filter(s => s.length > 0)
+    : []
+
   function handleVerify() {
     if (!note.trim() || !agreedDeliverables) return
     startVerifying(async () => {
@@ -36,14 +41,36 @@ export function SubmitWorkForm({
 
   return (
     <div className="space-y-4">
+      {deliverableItems.length > 0 && (
+        <div className="p-4 rounded-lg border border-[var(--color-blueprint-border)] bg-[var(--color-blueprint-overlay)]/50">
+          <p className="text-xs font-semibold text-[var(--color-blueprint-text-muted)] uppercase mb-3">// DELIVERABLES CHECKLIST</p>
+          <div className="space-y-2">
+            {deliverableItems.map((item, i) => (
+              <label key={i} className="flex items-start gap-3 cursor-pointer group">
+                <input 
+                  type="checkbox" 
+                  name="completed_deliverables" 
+                  value={item}
+                  form="submit-work-form"
+                  className="mt-1 accent-[var(--color-blueprint-accent)]"
+                />
+                <span className="text-sm text-[var(--color-blueprint-text-secondary)] group-hover:text-[var(--color-blueprint-text-primary)] transition-colors">
+                  {item}
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div>
         <label className="block text-xs text-[var(--color-blueprint-text-muted)] mb-1">
-          Describe what you're submitting + share file links (Google Drive, WeTransfer, etc.)
+          Submission Note & Links
         </label>
         <Textarea
           value={note}
           onChange={e => { setNote(e.target.value); setCheckResult(null); setVerified(false) }}
-          placeholder="e.g. Uploaded all drawings to Google Drive: [link]. Files include site plan (1:200), GF and FF floor plans (1:100), 4 elevation sheets, and 2 sections in DWG + PDF format."
+          placeholder="Describe your work and paste links (e.g. Google Drive) here..."
           className="min-h-[100px] text-sm"
         />
       </div>
@@ -87,7 +114,7 @@ export function SubmitWorkForm({
 
       {state?.error && <p className="text-red-400 text-xs">{state.error}</p>}
 
-      <form action={formAction}>
+      <form action={formAction} id="submit-work-form">
         <input type="hidden" name="contract_id" value={contractId} />
         <input type="hidden" name="note" value={note} />
         <Button type="submit" disabled={isPending || !note.trim()}>
