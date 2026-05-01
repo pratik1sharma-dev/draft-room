@@ -59,6 +59,7 @@ Be specific to the project type. A residential bungalow needs different delivera
 
     return { spec }
   } catch (e) {
+    console.error('[generateProjectSpec] error:', e)
     return { error: 'Failed to generate spec. Please try again.' }
   }
 }
@@ -91,6 +92,40 @@ Return a JSON object with exactly these fields:
 
     return { result }
   } catch (e) {
+    console.error('[verifyDelivery] error:', e)
     return { error: 'AI verification failed. Please review manually.' }
+  }
+}
+
+export interface PaymentMilestone {
+  milestone: string
+  amount: number
+  trigger: string
+}
+
+export async function generatePaymentPlan(input: {
+  deliverables: string
+  totalAmount: number
+  timeline: string
+}): Promise<{ plan?: PaymentMilestone[]; error?: string }> {
+  try {
+    const plan = await generateJSON<PaymentMilestone[]>(
+      `Deliverables: ${input.deliverables}
+Total Amount: ₹${input.totalAmount}
+Timeline: ${input.timeline}`,
+      `You are a financial advisor for architectural projects in India.
+Break down the total amount into 3-4 logical payment milestones.
+Ensure the milestones are tied to the provided deliverables.
+Ensure the sum of 'amount' in all milestones exactly equals ${input.totalAmount}.
+
+Return a JSON array of objects with these fields:
+[
+  { "milestone": "Short description", "amount": <number>, "trigger": "Action that triggers payment" }
+]`
+    )
+    return { plan }
+  } catch (e) {
+    console.error('[generatePaymentPlan] error:', e)
+    return { error: 'Failed to generate payment plan' }
   }
 }

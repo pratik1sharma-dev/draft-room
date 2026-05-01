@@ -133,6 +133,7 @@ export function ReferenceFilesForm({ contractId }: { contractId: string }) {
   const [label, setLabel] = useState('')
   const [isPending, startTransition] = useTransition()
   const [saved, setSaved] = useState(false)
+  const [open, setOpen] = useState(false)
 
   async function handleShare() {
     if (!url.trim()) return
@@ -145,19 +146,28 @@ export function ReferenceFilesForm({ contractId }: { contractId: string }) {
       setSaved(true)
       setUrl('')
       setLabel('')
+      setOpen(false)
     })
   }
 
+  if (!open) {
+    return (
+      <Button variant="outline" className="w-full sm:w-auto" onClick={() => setOpen(true)}>
+        Share reference files →
+      </Button>
+    )
+  }
+
   return (
-    <div className="space-y-3 p-4 rounded-lg border border-[var(--color-blueprint-border-strong)] bg-[var(--color-blueprint-overlay)]">
+    <div className="space-y-3 p-4 rounded-lg border border-[var(--color-blueprint-border-strong)] bg-[var(--color-blueprint-overlay)] w-full">
       <p className="text-sm font-medium text-[var(--color-blueprint-text-primary)]">Share reference files</p>
       <p className="text-xs text-[var(--color-blueprint-text-muted)]">
-        Share a Google Drive, Dropbox, or WeTransfer link to your drawings, site photos, or reference material.
+        Share links to drawings, site photos, or reference material.
       </p>
       <Input
         value={label}
         onChange={e => setLabel(e.target.value)}
-        placeholder="Label (e.g. Site photos, Existing drawings)"
+        placeholder="Label (e.g. GF Floor Plan)"
         className="text-sm"
       />
       <Input
@@ -168,9 +178,14 @@ export function ReferenceFilesForm({ contractId }: { contractId: string }) {
         className="text-sm"
       />
       {saved && <p className="text-xs text-emerald-400">Shared in thread ✓</p>}
-      <Button size="sm" type="button" onClick={handleShare} disabled={isPending || !url.trim()}>
-        {isPending ? 'Sharing...' : 'Share files →'}
-      </Button>
+      <div className="flex gap-2">
+        <Button size="sm" type="button" onClick={handleShare} disabled={isPending || !url.trim()}>
+          {isPending ? 'Sharing...' : 'Share files'}
+        </Button>
+        <Button size="sm" variant="ghost" type="button" onClick={() => setOpen(false)}>
+          Cancel
+        </Button>
+      </div>
     </div>
   )
 }

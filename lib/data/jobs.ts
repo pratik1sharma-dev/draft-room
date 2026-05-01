@@ -47,10 +47,13 @@ export async function getClientJobs(clientId: string) {
 
   const { data, error } = await supabase
     .from('jobs')
-    .select('*')
+    .select('*, applications(count)')
     .eq('client_id', clientId)
     .order('created_at', { ascending: false })
 
   if (error) return []
-  return data
+  return (data ?? []).map((j: any) => ({
+    ...j,
+    application_count: j.applications?.[0]?.count ?? 0,
+  }))
 }

@@ -1,5 +1,17 @@
+import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { getDraftsmen } from '@/lib/data/draftsmen'
+
+export const metadata: Metadata = {
+  title: 'Hire CAD Draftsmen in India — AutoCAD, Revit, SketchUp',
+  description: 'Browse verified CAD draftsmen across India. AutoCAD, Revit, SketchUp, structural drawings, interiors — check portfolios, rates, and hire directly.',
+  openGraph: {
+    title: 'Hire CAD Draftsmen in India | DraftRoom',
+    description: 'Browse verified draftsmen across India. Check portfolios and hire directly.',
+    url: 'https://draftroom.in/draftsmen',
+  },
+  alternates: { canonical: 'https://draftroom.in/draftsmen' },
+}
 import { DraftsmanCard } from '@/components/marketplace/draftsman-card'
 import { SkillFilter } from '@/components/marketplace/skill-filter'
 

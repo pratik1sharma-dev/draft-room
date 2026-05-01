@@ -12,6 +12,16 @@ export async function applyToJob(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('bio, skills')
+    .eq('user_id', user.id)
+    .single()
+
+  if (!profile?.bio?.trim() || !profile?.skills?.length) {
+    return { error: 'Add your bio and skills to your profile before applying.' }
+  }
+
   const jobId = formData.get('job_id') as string
   const coverNote = formData.get('cover_note') as string
   const proposedRate = Number(formData.get('proposed_rate'))
@@ -66,16 +76,13 @@ export async function acceptApplication(applicationId: string, jobId: string): P
     client_id: user.id,
     draftsman_id: application.draftsman_id,
     agreed_rate: application.proposed_rate,
+    status: 'client_turn',
   })
 
   if (contractError) return { error: contractError.message }
 
-  await supabase
-    .from('jobs')
-    .update({ status: 'in_progress' })
-    .eq('id', jobId)
-
   revalidatePath('/applications')
+  revalidatePath(`/projects/${jobId}`)
   revalidatePath('/contracts')
   redirect('/contracts')
 }

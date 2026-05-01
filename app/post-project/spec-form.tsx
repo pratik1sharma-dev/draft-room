@@ -58,12 +58,12 @@ export function SpecForm({ hireAfter }: { hireAfter?: string }) {
 
       const s = result.spec!
       setSpec(s)
-      setTitle(s.title)
-      setDescription(s.description)
-      setDeliverables(s.deliverables)
-      setSkills(s.skills_required)
-      setBudgetMin(String(s.budget_min))
-      setBudgetMax(String(s.budget_max))
+      setTitle(s.title ?? '')
+      setDescription(s.description ?? '')
+      setDeliverables(Array.isArray(s.deliverables) ? s.deliverables : [])
+      setSkills(Array.isArray(s.skills_required) ? s.skills_required : [])
+      setBudgetMin(String(s.budget_min ?? ''))
+      setBudgetMax(String(s.budget_max ?? ''))
       setStep('review')
     })
   }
@@ -119,7 +119,7 @@ export function SpecForm({ hireAfter }: { hireAfter?: string }) {
   }
 
   // Review step
-  const deliverablesText = deliverables.join('\n')
+  const deliverablesText = (deliverables ?? []).join('\n')
 
   return (
     <form action={postAction} className="space-y-6">

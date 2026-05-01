@@ -1,4 +1,6 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
 import { getDraftsman } from '@/lib/data/draftsmen'
 import { Badge } from '@/components/ui/badge'
@@ -6,6 +8,32 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}): Promise<Metadata> {
+  const { id } = await params
+  const profile = await getDraftsman(id) as any
+  if (!profile) return {}
+  const name = profile.users?.name ?? 'CAD Draftsman'
+  const skills = profile.skills?.slice(0, 3).join(', ') ?? 'CAD drafting'
+  const location = [profile.users?.city, profile.users?.state].filter(Boolean).join(', ') || 'India'
+  const description = profile.bio
+    ? profile.bio.slice(0, 155) + (profile.bio.length > 155 ? '…' : '')
+    : `Hire ${name} for ${skills} drafting projects. Based in ${location}.`
+  return {
+    title: `${name} — CAD Draftsman in ${location}`,
+    description,
+    openGraph: {
+      title: `${name} | DraftRoom`,
+      description,
+      url: `https://draftroom.in/draftsmen/${id}`,
+    },
+    alternates: { canonical: `https://draftroom.in/draftsmen/${id}` },
+  }
+}
 
 export default async function DraftsmanProfilePage({
   params,
@@ -125,9 +153,9 @@ export default async function DraftsmanProfilePage({
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="aspect-video bg-[var(--color-blueprint-surface-2)] rounded-md overflow-hidden border border-[var(--color-blueprint-border)] hover:border-[var(--color-blueprint-accent)]/40 transition-colors flex items-center justify-center"
+                className="relative aspect-video bg-[var(--color-blueprint-surface-2)] rounded-md overflow-hidden border border-[var(--color-blueprint-border)] hover:border-[var(--color-blueprint-accent)]/40 transition-colors"
               >
-                <img src={url} alt={`Portfolio ${i + 1}`} className="w-full h-full object-cover" />
+                <Image src={url} alt={`Portfolio item ${i + 1}`} fill className="object-cover" sizes="(max-width: 768px) 50vw, 33vw" />
               </a>
             ))}
           </div>

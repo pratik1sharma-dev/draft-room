@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
-const ACTIVE_CONTRACT_STATUSES = ['offer_sent', 'client_turn', 'draftsman_turn', 'terms_agreed', 'in_progress', 'in_review', 'revision_requested']
+import { ContractStatus, ACTIVE_STATUSES } from '@/lib/contracts/states'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -20,14 +20,14 @@ export default async function DashboardPage() {
 
   const { data: profileData } = await supabase
     .from('profiles')
-    .select('bio, skills, hourly_rate, city, firm_name')
+    .select('bio, skills, hourly_rate, firm_name')
     .eq('user_id', user.id)
     .single()
 
   const isClient = userData.role === 'client'
   const isProfileIncomplete = isClient
     ? !userData.city || !userData.state
-    : !profileData?.bio || !profileData?.skills?.length || !profileData?.hourly_rate
+    : !profileData?.bio || !profileData?.skills?.length
 
   return (
     <main className="max-w-5xl mx-auto px-6 py-12">
@@ -50,7 +50,7 @@ export default async function DashboardPage() {
           <p className="text-sm text-amber-400">
             {isClient
               ? 'Complete your profile — add your city and state so draftsmen know where you\'re based.'
-              : 'Complete your profile — add your bio, skills, and hourly rate to start getting hired.'}
+              : 'Add your bio and skills — required before you can apply to projects.'}
           </p>
           <Button size="sm" asChild>
             <Link href="/profile/edit">Complete profile →</Link>
@@ -70,15 +70,13 @@ async function ClientDashboard({ userId }: { userId: string }) {
   const projects = await getClientJobs(userId)
   const activeProjects = projects.filter((j: any) => j.status === 'open' || j.status === 'in_progress')
   const contracts = await getContracts(userId, 'client')
-  const actionRequired = contracts.filter((c: any) => c.status === 'client_turn')
-  const activeContracts = contracts.filter((c: any) => ACTIVE_CONTRACT_STATUSES.includes(c.status))
-
+  const actionRequired = contracts.filter((c: any) => c.status === ContractStatus.CLIENT_TURN)
+  const activeContracts = contracts.filter((c: any) => (ACTIVE_STATUSES as string[]).includes(c.status))
   return (
     <div className="space-y-8">
       <div className="flex gap-3 flex-wrap">
         <Button asChild><Link href="/post-project">Post a Project →</Link></Button>
         <Button variant="outline" asChild><Link href="/draftsmen">Browse Draftsmen</Link></Button>
-        <Button variant="outline" asChild><Link href="/applications">View Applications</Link></Button>
         <Button variant="ghost" asChild><Link href="/profile/edit">Edit Profile</Link></Button>
       </div>
 
@@ -116,7 +114,14 @@ async function ClientDashboard({ userId }: { userId: string }) {
             {activeProjects.slice(0, 4).map((project: any) => (
               <Link key={project.id} href={`/projects/${project.id}`} className="blueprint-card p-4 flex items-center justify-between hover:border-[var(--color-blueprint-accent)]/40 transition-colors">
                 <span className="font-medium text-[var(--color-blueprint-text-primary)]">{project.title}</span>
-                <Badge variant={project.status === 'open' ? 'available' : 'founding'}>{project.status}</Badge>
+                <div className="flex items-center gap-2">
+                  {project.application_count > 0 && (
+                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[var(--color-blueprint-accent)]/10 text-[var(--color-blueprint-accent)] border border-[var(--color-blueprint-accent)]/30">
+                      {project.application_count} applied
+                    </span>
+                  )}
+                  <Badge variant={project.status === 'open' ? 'available' : 'founding'}>{project.status}</Badge>
+                </div>
               </Link>
             ))}
           </div>
@@ -140,8 +145,8 @@ async function ClientDashboard({ userId }: { userId: string }) {
 async function DraftsmanDashboard({ userId }: { userId: string }) {
   const applications = await getDraftsmanApplications(userId)
   const contracts = await getContracts(userId, 'draftsman')
-  const actionRequired = contracts.filter((c: any) => c.status === 'draftsman_turn' || c.status === 'offer_sent' || c.status === 'revision_requested')
-  const activeContracts = contracts.filter((c: any) => ACTIVE_CONTRACT_STATUSES.includes(c.status))
+  const actionRequired = contracts.filter((c: any) => c.status === ContractStatus.DRAFTSMAN_TURN || c.status === ContractStatus.OFFER_SENT || c.status === ContractStatus.REVISION_REQUESTED)
+  const activeContracts = contracts.filter((c: any) => (ACTIVE_STATUSES as string[]).includes(c.status))
   const pendingApps = applications.filter((a: any) => a.status === 'pending')
 
   return (
@@ -161,7 +166,7 @@ async function DraftsmanDashboard({ userId }: { userId: string }) {
               <Link key={c.id} href={`/contracts/${c.id}`} className="blueprint-card p-4 flex items-center justify-between hover:border-[var(--color-blueprint-accent)]/40 transition-colors border-[var(--color-blueprint-accent)]/30">
                 <span className="font-medium text-[var(--color-blueprint-text-primary)]">{c.jobs.title}</span>
                 <span className="text-xs text-[var(--color-blueprint-accent)]">
-                  {c.status === 'offer_sent' ? 'New offer →' : 'Your turn →'}
+                  {c.status === ContractStatus.OFFER_SENT ? 'New offer →' : 'Your turn →'}
                 </span>
               </Link>
             ))}

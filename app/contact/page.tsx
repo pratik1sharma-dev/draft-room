@@ -1,6 +1,17 @@
+import type { Metadata } from 'next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+
+export const metadata: Metadata = {
+  title: 'Contact DraftRoom',
+  description: 'Get in touch with the DraftRoom team for questions, feedback, or partnership enquiries. We read everything.',
+  openGraph: {
+    title: 'Contact DraftRoom',
+    url: 'https://draftroom.in/contact',
+  },
+  alternates: { canonical: 'https://draftroom.in/contact' },
+}
 
 export default function ContactPage() {
   return (

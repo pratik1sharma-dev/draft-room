@@ -13,33 +13,7 @@ import {
 
 export const dynamic = 'force-dynamic'
 
-const STATUS_LABELS: Record<string, string> = {
-  offer_sent: 'Offer Sent',
-  client_turn: 'Your Turn',
-  draftsman_turn: 'Your Turn',
-  terms_agreed: 'Terms Agreed',
-  in_progress: 'In Progress',
-  in_review: 'In Review',
-  revision_requested: 'Revision Requested',
-  completed: 'Completed',
-  declined: 'Declined',
-  cancelled: 'Cancelled',
-  disputed: 'Disputed',
-}
-
-const STATUS_VARIANTS: Record<string, 'available' | 'verified' | 'founding' | 'skill'> = {
-  offer_sent: 'founding',
-  client_turn: 'founding',
-  draftsman_turn: 'founding',
-  terms_agreed: 'available',
-  in_progress: 'available',
-  in_review: 'founding',
-  revision_requested: 'founding',
-  completed: 'verified',
-  declined: 'skill',
-  cancelled: 'skill',
-  disputed: 'skill',
-}
+import { ContractStatus, STATUS_LABELS, STATUS_VARIANTS, DISCUSSION_STATUSES, WORK_STATUSES, CANCELLABLE_STATUSES } from '@/lib/contracts/states'
 
 export default async function ContractDetailPage({
   params,
@@ -60,13 +34,17 @@ export default async function ContractDetailPage({
 
   const messages = await getContractMessages(id)
   const c = contract as any
-  const status = c.status as string
-  const isMyTurn = (isClient && status === 'client_turn') || (isDraftsman && status === 'draftsman_turn')
-  const isWaiting = (isClient && status === 'draftsman_turn') || (isDraftsman && status === 'client_turn')
+  const status = c.status as ContractStatus
+  const isMyTurn = (isClient && status === ContractStatus.CLIENT_TURN) || (isDraftsman && status === ContractStatus.DRAFTSMAN_TURN)
   const hasPendingProposal = !!(c.proposed_deliverables && c.proposed_amount)
-  const inDiscussion = ['client_turn', 'draftsman_turn'].includes(status)
+  const isProposalSender = hasPendingProposal && user.id === c.proposal_sender_id
+  const isProposalRecipient = hasPendingProposal && user.id !== c.proposal_sender_id
+  const inDiscussion = (DISCUSSION_STATUSES as string[]).includes(status)
+  const inWorkPhase = (WORK_STATUSES as string[]).includes(status)
+  const termsAgreed = status === ContractStatus.TERMS_AGREED
 
   const otherParty = isClient ? c.draftsman?.name : c.client?.name
+  const proposalKey = hasPendingProposal ? `${c.proposed_amount}-${c.proposed_deliverables}` : 'new'
 
   return (
     <main className="max-w-3xl mx-auto px-6 py-12">
@@ -84,8 +62,8 @@ export default async function ContractDetailPage({
           </div>
           <div className="text-right">
             <Badge variant={STATUS_VARIANTS[status] ?? 'skill'}>
-              {status === 'client_turn' && isClient ? 'Action Required' :
-               status === 'draftsman_turn' && isDraftsman ? 'Action Required' :
+              {status === ContractStatus.CLIENT_TURN && isClient ? 'Action Required' :
+               status === ContractStatus.DRAFTSMAN_TURN && isDraftsman ? 'Action Required' :
                STATUS_LABELS[status] ?? status}
             </Badge>
             <p className="text-lg font-bold text-[var(--color-blueprint-accent)] mt-2">
@@ -95,24 +73,36 @@ export default async function ContractDetailPage({
         </div>
 
         {c.agreed_deliverables && (
-          <div className="mt-4 pt-4 border-t border-[var(--color-blueprint-border)]">
-            <p className="text-xs text-[var(--color-blueprint-text-muted)] mb-1">Agreed deliverables</p>
-            <p className="text-sm text-[var(--color-blueprint-text-secondary)]">{c.agreed_deliverables}</p>
+          <div className="mt-4 pt-4 border-t border-[var(--color-blueprint-border)] grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="md:col-span-2">
+              <p className="text-xs text-[var(--color-blueprint-text-muted)] mb-1">Agreed deliverables</p>
+              <p className="text-sm text-[var(--color-blueprint-text-secondary)]">{c.agreed_deliverables}</p>
+            </div>
+            <div>
+              <p className="text-xs text-[var(--color-blueprint-text-muted)] mb-1">Delivery date</p>
+              <p className="text-sm font-medium text-[var(--color-blueprint-text-primary)]">
+                {c.agreed_delivery_date ? new Date(c.agreed_delivery_date).toLocaleDateString('en-IN') : 'Not set'}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-[var(--color-blueprint-text-muted)] mb-1">Revisions included</p>
+              <p className="text-sm font-medium text-[var(--color-blueprint-text-primary)]">{c.agreed_revisions ?? 'None'}</p>
+            </div>
           </div>
         )}
       </div>
 
       {/* Action panel */}
-      {status === 'offer_sent' && (
+      {status === ContractStatus.OFFER_SENT && (
         <div className="blueprint-card p-6 mb-6">
           {isDraftsman && (
             <>
               <p className="blueprint-label mb-2">// NEW OFFER</p>
               <p className="text-sm text-[var(--color-blueprint-text-secondary)] mb-1">
-                {c.client?.name} wants to hire you directly.
+                {c.client?.name} wants to work with you on this project.
               </p>
               <p className="text-sm text-[var(--color-blueprint-text-secondary)] mb-4">
-                Original offer: <span className="text-[var(--color-blueprint-accent)] font-semibold">₹{c.agreed_rate?.toLocaleString('en-IN')}</span>
+                Budget: <span className="text-[var(--color-blueprint-accent)] font-semibold">₹{c.agreed_rate?.toLocaleString('en-IN')}</span>
               </p>
               <p className="text-xs text-[var(--color-blueprint-text-muted)] mb-4">
                 Accepting opens a discussion thread where you can ask questions, finalise deliverables, and agree on a final price before work begins.
@@ -139,62 +129,127 @@ export default async function ContractDetailPage({
       )}
 
       {inDiscussion && (
-        <div className="blueprint-card p-6 mb-6">
-          {isMyTurn && !hasPendingProposal && (
-            <>
-              <p className="blueprint-label mb-2">// YOUR TURN</p>
-              <p className="text-sm text-[var(--color-blueprint-text-secondary)] mb-4">
-                {isClient
-                  ? 'Share your project brief, requirements, reference files, and any questions.'
-                  : 'Ask questions, share your approach, or propose final terms when you\'re ready.'}
+        <div className="space-y-6 mb-6">
+          {/* Proposal / Terms Area - Only show during negotiation phase */}
+          {!inWorkPhase && !termsAgreed && (hasPendingProposal || isDraftsman || isClient) && (
+            <div className={`blueprint-card p-6 ${hasPendingProposal ? 'border-[var(--color-blueprint-accent)]/30' : ''}`}>
+              <p className="blueprint-label mb-4">
+                {!hasPendingProposal 
+                  ? '// PROPOSE TERMS' 
+                  : (isProposalRecipient ? '// ACTION REQUIRED: REVIEW TERMS' : '// YOUR PROPOSAL (PENDING)')}
               </p>
-              <div className="space-y-3">
-                <MessageForm contractId={id} />
-                {isClient && <ReferenceFilesForm contractId={id} />}
-                {isDraftsman && (
+              
+              {hasPendingProposal ? (
+                <div className="space-y-4">
+                  <div className="mb-4 p-4 rounded-lg bg-[var(--color-blueprint-overlay)] border border-[var(--color-blueprint-border-strong)] space-y-3">
+                    <div>
+                      <p className="text-xs text-[var(--color-blueprint-text-muted)] mb-1">Deliverables</p>
+                      <p className="text-sm text-[var(--color-blueprint-text-primary)]">{c.proposed_deliverables}</p>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-xs text-[var(--color-blueprint-text-muted)] mb-1">Final price</p>
+                        <p className="text-xl font-bold text-[var(--color-blueprint-accent)]">
+                          ₹{c.proposed_amount?.toLocaleString('en-IN')}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-[var(--color-blueprint-text-muted)] mb-1">Delivery date</p>
+                        <p className="text-sm font-medium text-[var(--color-blueprint-text-primary)]">
+                          {c.proposed_delivery_date ? new Date(c.proposed_delivery_date).toLocaleDateString('en-IN') : 'Not set'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {isProposalRecipient ? (
+                      <>
+                        <form action={async () => { 'use server'; await agreeToTerms(id) }}>
+                          <Button type="submit" className="w-full">Agree to terms →</Button>
+                        </form>
+                        <TermsForm 
+                          key={`counter-${proposalKey}`}
+                          contractId={id} 
+                          defaultAmount={c.agreed_rate} 
+                          initialData={{
+                            deliverables: c.proposed_deliverables,
+                            amount: c.proposed_amount,
+                            timeline: c.proposed_timeline,
+                            delivery_date: c.proposed_delivery_date,
+                            revisions: c.proposed_revisions
+                          }}
+                        />
+                      </>
+                    ) : (
+                      <div className="sm:col-span-2">
+                        <TermsForm 
+                          key={`edit-${proposalKey}`}
+                          contractId={id} 
+                          defaultAmount={c.agreed_rate} 
+                          initialData={{
+                            deliverables: c.proposed_deliverables,
+                            amount: c.proposed_amount,
+                            timeline: c.proposed_timeline,
+                            delivery_date: c.proposed_delivery_date,
+                            revisions: c.proposed_revisions
+                          }}
+                        />
+                        <p className="text-[10px] text-[var(--color-blueprint-text-muted)] mt-2 text-center italic">
+                          {isMyTurn ? `It's your turn to chat, but you can also edit your proposal above.` : `Wait for ${otherParty} to respond or edit your proposal above.`}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <p className="text-sm text-[var(--color-blueprint-text-secondary)] mb-2">
+                    {isDraftsman 
+                      ? 'Propose the final scope, price, and timeline to get started.'
+                      : 'Specify your requirements and budget to receive a proposal, or propose terms yourself.'}
+                  </p>
                   <TermsForm contractId={id} defaultAmount={c.agreed_rate} />
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Discussion / Messaging Area */}
+          <div className="blueprint-card p-6">
+            <div className="flex justify-between items-center mb-4">
+              <p className="blueprint-label">// DISCUSSION</p>
+              {!inWorkPhase && !isMyTurn && (
+                <Badge variant="skill" className="text-[10px] animate-pulse">Waiting for {otherParty}...</Badge>
+              )}
+            </div>
+            
+            <div className="space-y-6">
+              <MessageForm contractId={id} />
+              
+              <div className="flex flex-wrap gap-3 pt-4 border-t border-[var(--color-blueprint-border)]">
+                {isClient && (inWorkPhase || termsAgreed || isMyTurn) && <ReferenceFilesForm contractId={id} />}
+                {isDraftsman && !inWorkPhase && !termsAgreed && isMyTurn && !hasPendingProposal && (
+                  <TermsForm 
+                    key={`bottom-${proposalKey}`}
+                    contractId={id} 
+                    defaultAmount={c.agreed_rate} 
+                  />
                 )}
               </div>
-            </>
-          )}
-
-          {isMyTurn && hasPendingProposal && isClient && (
-            <>
-              <p className="blueprint-label mb-2">// PROPOSAL RECEIVED</p>
-              <div className="mb-4 p-4 rounded-lg bg-[var(--color-blueprint-overlay)] border border-[var(--color-blueprint-border-strong)]">
-                <p className="text-xs text-[var(--color-blueprint-text-muted)] mb-1">Deliverables</p>
-                <p className="text-sm text-[var(--color-blueprint-text-primary)] mb-3">{c.proposed_deliverables}</p>
-                <p className="text-xs text-[var(--color-blueprint-text-muted)] mb-1">Final price</p>
-                <p className="text-xl font-bold text-[var(--color-blueprint-accent)]">
-                  ₹{c.proposed_amount?.toLocaleString('en-IN')}
+              
+              {!inWorkPhase && !termsAgreed && !isMyTurn && (
+                <p className="text-[10px] text-[var(--color-blueprint-text-muted)] italic text-center">
+                  It is currently {otherParty}'s turn to respond to the latest proposal or message.
                 </p>
-              </div>
-              <p className="text-xs text-[var(--color-blueprint-text-muted)] mb-4">
-                Agreeing locks these terms. Send a message to counter or ask questions instead.
-              </p>
-              <div className="flex gap-3 flex-wrap">
-                <form action={async () => { 'use server'; await agreeToTerms(id) }}>
-                  <Button type="submit">Agree to terms →</Button>
-                </form>
-                <MessageForm contractId={id} />
-              </div>
-            </>
-          )}
-
-          {isWaiting && (
-            <>
-              <p className="blueprint-label mb-2">// WAITING</p>
-              <p className="text-sm text-[var(--color-blueprint-text-secondary)]">
-                {isClient
-                  ? `Waiting for ${c.draftsman?.name} to respond.`
-                  : `Waiting for ${c.client?.name} to respond.`}
-              </p>
-            </>
-          )}
+              )}
+            </div>
+          </div>
         </div>
       )}
 
-      {status === 'terms_agreed' && (
+      {status === ContractStatus.TERMS_AGREED && (
         <div className="blueprint-card p-6 mb-6">
           <p className="blueprint-label mb-2">// TERMS LOCKED</p>
           <p className="text-sm text-[var(--color-blueprint-text-secondary)] mb-4">
@@ -216,7 +271,7 @@ export default async function ContractDetailPage({
         </div>
       )}
 
-      {status === 'in_progress' && (
+      {status === ContractStatus.IN_PROGRESS && (
         <div className="blueprint-card p-6 mb-6">
           <p className="blueprint-label mb-2">// IN PROGRESS</p>
           {isDraftsman && (
@@ -235,7 +290,7 @@ export default async function ContractDetailPage({
         </div>
       )}
 
-      {status === 'in_review' && (
+      {status === ContractStatus.IN_REVIEW && (
         <div className="blueprint-card p-6 mb-6">
           <p className="blueprint-label mb-2">// REVIEW DELIVERABLES</p>
           {isClient && (
@@ -259,7 +314,7 @@ export default async function ContractDetailPage({
         </div>
       )}
 
-      {status === 'revision_requested' && (
+      {status === ContractStatus.REVISION_REQUESTED && (
         <div className="blueprint-card p-6 mb-6">
           <p className="blueprint-label mb-2">// REVISION REQUESTED</p>
           {isDraftsman && (
@@ -280,7 +335,7 @@ export default async function ContractDetailPage({
         </div>
       )}
 
-      {status === 'completed' && (
+      {status === ContractStatus.COMPLETED && (
         <div className="blueprint-card p-6 mb-6 border-[var(--color-blueprint-accent)]/30">
           <p className="blueprint-label mb-2">// COMPLETED</p>
           <p className="text-sm text-[var(--color-blueprint-text-secondary)]">
@@ -289,7 +344,7 @@ export default async function ContractDetailPage({
         </div>
       )}
 
-      {['declined', 'cancelled'].includes(status) && (
+      {([ContractStatus.DECLINED, ContractStatus.CANCELLED] as string[]).includes(status) && (
         <div className="blueprint-card p-6 mb-6 opacity-60">
           <p className="blueprint-label mb-2">// {status.toUpperCase()}</p>
           <p className="text-sm text-[var(--color-blueprint-text-muted)]">This contract is no longer active.</p>
@@ -297,7 +352,7 @@ export default async function ContractDetailPage({
       )}
 
       {/* Cancel option during discussion */}
-      {['offer_sent', 'client_turn', 'draftsman_turn', 'terms_agreed'].includes(status) && (
+      {(CANCELLABLE_STATUSES as string[]).includes(status) && (
         <div className="text-right mb-6">
           <form action={async () => { 'use server'; await cancelContract(id) }}>
             <button type="submit" className="text-xs text-[var(--color-blueprint-text-muted)] hover:text-red-400 transition-colors">
@@ -308,9 +363,9 @@ export default async function ContractDetailPage({
       )}
 
       {/* Message thread */}
-      {messages.length > 0 && (
-        <div className="blueprint-card p-6">
-          <p className="blueprint-label mb-4">// THREAD</p>
+      <div className="blueprint-card p-6">
+        <p className="blueprint-label mb-4">// THREAD</p>
+        {messages.length > 0 ? (
           <div className="space-y-4">
             {messages.map((msg: any) => {
               const isMe = msg.sender_id === user.id
@@ -338,8 +393,12 @@ export default async function ContractDetailPage({
               )
             })}
           </div>
-        </div>
-      )}
+        ) : (
+          <p className="text-sm text-[var(--color-blueprint-text-muted)] italic text-center py-4">
+            No messages yet. Use the discussion to finalise requirements.
+          </p>
+        )}
+      </div>
     </main>
   )
 }

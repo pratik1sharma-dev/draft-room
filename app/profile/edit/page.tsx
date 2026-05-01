@@ -19,11 +19,12 @@ export default async function ProfileEditPage() {
 
   const { data: profileData } = await supabase
     .from('profiles')
-    .select('bio, skills, hourly_rate, experience_years, linkedin_url, availability, portfolio_urls, firm_name, project_types')
+    .select('avatar_url, bio, skills, hourly_rate, experience_years, linkedin_url, availability, portfolio_urls, firm_name, project_types')
     .eq('user_id', user.id)
     .single()
 
   const profile = {
+    avatar_url: profileData?.avatar_url ?? null,
     bio: profileData?.bio ?? null,
     skills: profileData?.skills ?? [],
     hourly_rate: profileData?.hourly_rate ?? null,

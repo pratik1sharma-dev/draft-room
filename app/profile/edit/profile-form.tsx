@@ -17,6 +17,7 @@ interface ProfileFormProps {
   role: 'client' | 'draftsman'
   user: { name: string; phone: string | null; city: string | null; state: string | null }
   profile: {
+    avatar_url: string | null
     bio: string | null
     skills: string[]
     hourly_rate: number | null
@@ -39,6 +40,11 @@ export function ProfileForm({ role, user, profile }: ProfileFormProps) {
         <p className="blueprint-label">// BASIC INFO</p>
 
         <div className="grid md:grid-cols-2 gap-5">
+          <div className="md:col-span-2">
+            <label className="block text-sm text-[var(--color-blueprint-text-secondary)] mb-1.5">Avatar URL</label>
+            <Input name="avatar_url" defaultValue={profile.avatar_url ?? ''} placeholder="https://..." />
+            <p className="text-[10px] text-[var(--color-blueprint-text-muted)] mt-1">Paste a link to your profile photo (e.g. from Cloudinary or LinkedIn)</p>
+          </div>
           <div>
             <label className="block text-sm text-[var(--color-blueprint-text-secondary)] mb-1.5">Full name</label>
             <Input name="name" defaultValue={user.name} required />
@@ -75,7 +81,7 @@ export function ProfileForm({ role, user, profile }: ProfileFormProps) {
             <p className="blueprint-label">// PROFESSIONAL DETAILS</p>
 
             <div>
-              <label className="block text-sm text-[var(--color-blueprint-text-secondary)] mb-1.5">Bio (optional)</label>
+              <label className="block text-sm text-[var(--color-blueprint-text-secondary)] mb-1.5">Bio <span className="text-[var(--color-blueprint-accent)]">*</span></label>
               <Textarea
                 name="bio"
                 defaultValue={profile.bio ?? ''}

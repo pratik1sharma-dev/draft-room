@@ -13,9 +13,10 @@ interface JobCardProps {
     created_at: string
     users: { name: string; city: string | null }
   }
+  hasApplied?: boolean
 }
 
-export function JobCard({ job }: JobCardProps) {
+export function JobCard({ job, hasApplied }: JobCardProps) {
   const postedDaysAgo = Math.floor(
     (Date.now() - new Date(job.created_at).getTime()) / (1000 * 60 * 60 * 24)
   )
@@ -23,9 +24,16 @@ export function JobCard({ job }: JobCardProps) {
   return (
     <Link href={`/projects/${job.id}`} className="blueprint-card p-5 block hover:border-[var(--color-blueprint-accent)]/40 transition-colors group">
       <div className="flex items-start justify-between mb-2">
-        <h3 className="font-semibold text-[var(--color-blueprint-text-primary)] group-hover:text-[var(--color-blueprint-accent)] transition-colors">
-          {job.title}
-        </h3>
+        <div className="flex flex-col gap-1">
+          <h3 className="font-semibold text-[var(--color-blueprint-text-primary)] group-hover:text-[var(--color-blueprint-accent)] transition-colors">
+            {job.title}
+          </h3>
+          {hasApplied && (
+            <div className="flex">
+              <Badge variant="available" className="text-[10px] py-0 px-1.5 h-auto">Applied</Badge>
+            </div>
+          )}
+        </div>
         <span className="text-sm font-medium text-[var(--color-blueprint-accent)] shrink-0 ml-4">
           ₹{job.budget_amount.toLocaleString('en-IN')}
           {job.budget_type === 'hourly' ? '/hr' : ' fixed'}

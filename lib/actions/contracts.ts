@@ -2,6 +2,11 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { ContractStatus, DISCUSSION_STATUSES, CANCELLABLE_STATUSES } from '@/lib/contracts/states'
+
+function revalidateContract(contractId: string) {
+  revalidatePath(`/contracts/${contractId}`)
+}
 
 export async function acceptOffer(contractId: string): Promise<{ error: string } | null> {
   const supabase = await createClient()
@@ -10,13 +15,13 @@ export async function acceptOffer(contractId: string): Promise<{ error: string }
 
   const { error } = await supabase
     .from('contracts')
-    .update({ status: 'client_turn' })
+    .update({ status: ContractStatus.CLIENT_TURN })
     .eq('id', contractId)
     .eq('draftsman_id', user.id)
-    .eq('status', 'offer_sent')
+    .eq('status', ContractStatus.OFFER_SENT)
 
   if (error) return { error: error.message }
-  revalidatePath(`/contracts/${contractId}`)
+  revalidateContract(contractId)
   return null
 }
 
@@ -27,13 +32,13 @@ export async function declineOffer(contractId: string): Promise<{ error: string 
 
   const { error } = await supabase
     .from('contracts')
-    .update({ status: 'declined' })
+    .update({ status: ContractStatus.DECLINED })
     .eq('id', contractId)
     .eq('draftsman_id', user.id)
-    .eq('status', 'offer_sent')
+    .eq('status', ContractStatus.OFFER_SENT)
 
   if (error) return { error: error.message }
-  revalidatePath(`/contracts/${contractId}`)
+  revalidateContract(contractId)
   return null
 }
 
@@ -62,7 +67,7 @@ export async function sendMessage(
   const isDraftsman = contract.draftsman_id === user.id
   if (!isClient && !isDraftsman) return { error: 'Not a party to this contract' }
 
-  if (!['client_turn', 'draftsman_turn'].includes(contract.status)) {
+  if (!(DISCUSSION_STATUSES as string[]).includes(contract.status)) {
     return { error: 'Cannot send messages at this stage' }
   }
 
@@ -72,18 +77,12 @@ export async function sendMessage(
 
   if (msgError) return { error: msgError.message }
 
-  const nextStatus = isClient ? 'draftsman_turn' : 'client_turn'
+  const nextStatus = isClient ? ContractStatus.DRAFTSMAN_TURN : ContractStatus.CLIENT_TURN
   const updateData: Record<string, unknown> = { status: nextStatus }
-
-  // Client responding clears any pending proposal (they're countering)
-  if (isClient) {
-    updateData.proposed_deliverables = null
-    updateData.proposed_amount = null
-  }
 
   await supabase.from('contracts').update(updateData).eq('id', contractId)
 
-  revalidatePath(`/contracts/${contractId}`)
+  revalidateContract(contractId)
   return null
 }
 
@@ -98,23 +97,66 @@ export async function proposeTerms(
   const contractId = formData.get('contract_id') as string
   const deliverables = formData.get('deliverables') as string
   const amount = Number(formData.get('amount'))
+  const timeline = formData.get('timeline') as string
+  const deliveryDate = formData.get('delivery_date') as string
+  const revisions = Number(formData.get('revisions'))
 
   if (!deliverables?.trim()) return { error: 'Deliverables description is required' }
   if (!amount || amount < 1) return { error: 'Amount is required' }
+  if (!timeline?.trim()) return { error: 'Timeline is required' }
+  if (!deliveryDate) return { error: 'Delivery date is required' }
 
-  const { error } = await supabase
+  const { data: contract, error: fetchError } = await supabase
+    .from('contracts')
+    .select('client_id, draftsman_id, status, proposed_amount')
+    .eq('id', contractId)
+    .single()
+
+  if (fetchError || !contract) return { error: 'Contract not found' }
+
+  const isClient = contract.client_id === user.id
+  const isDraftsman = contract.draftsman_id === user.id
+  if (!isClient && !isDraftsman) return { error: 'Not a party to this contract' }
+
+  const nextStatus = isClient ? ContractStatus.DRAFTSMAN_TURN : ContractStatus.CLIENT_TURN
+
+  // Generate AI payment plan
+  let paymentPlan = null
+  try {
+    const { generatePaymentPlan } = await import('@/lib/actions/ai')
+    const result = await generatePaymentPlan({ deliverables: deliverables.trim(), totalAmount: amount, timeline: timeline.trim() })
+    if (result.plan) paymentPlan = result.plan
+  } catch {
+    // Non-fatal — proceed without payment plan
+  }
+
+  const { error, count } = await supabase
     .from('contracts')
     .update({
       proposed_deliverables: deliverables.trim(),
       proposed_amount: amount,
-      status: 'client_turn',
-    })
+      proposed_timeline: timeline.trim(),
+      proposed_delivery_date: deliveryDate,
+      proposed_revisions: revisions || 2,
+      payment_plan: paymentPlan,
+      proposal_sender_id: user.id,
+      status: nextStatus,
+    }, { count: 'exact' })
     .eq('id', contractId)
-    .eq('draftsman_id', user.id)
-    .in('status', ['draftsman_turn', 'client_turn'])
+    .in('status', DISCUSSION_STATUSES)
 
   if (error) return { error: error.message }
-  revalidatePath(`/contracts/${contractId}`)
+  if (count === 0) return { error: 'Unable to update terms at this stage' }
+
+  const isCounter = !!contract.proposed_amount
+  const label = isCounter ? 'Counter-proposal' : 'Proposal'
+  await supabase.from('messages').insert({
+    contract_id: contractId,
+    sender_id: user.id,
+    content: `[${label} sent] ₹${amount.toLocaleString('en-IN')} · Delivery by ${new Date(deliveryDate).toLocaleDateString('en-IN')} · ${revisions} revisions included`,
+  })
+
+  revalidateContract(contractId)
   return null
 }
 
@@ -125,30 +167,51 @@ export async function agreeToTerms(contractId: string): Promise<{ error: string 
 
   const { data: contract } = await supabase
     .from('contracts')
-    .select('proposed_deliverables, proposed_amount')
+    .select('client_id, draftsman_id, status, proposed_deliverables, proposed_amount, proposed_timeline, proposed_delivery_date, proposed_revisions, payment_plan, proposal_sender_id')
     .eq('id', contractId)
-    .eq('client_id', user.id)
     .single()
 
-  if (!contract?.proposed_deliverables || !contract?.proposed_amount) {
+  if (!contract) return { error: 'Contract not found' }
+  if (!contract.proposed_deliverables || !contract.proposed_amount) {
     return { error: 'No proposal to agree to' }
   }
+
+  if (contract.proposal_sender_id === user.id) {
+    return { error: 'You cannot agree to your own proposal. Wait for the other party to respond.' }
+  }
+
+  const isClient = contract.client_id === user.id
+  const isDraftsman = contract.draftsman_id === user.id
+  if (!isClient && !isDraftsman) return { error: 'Not a party to this contract' }
 
   const { error } = await supabase
     .from('contracts')
     .update({
-      status: 'terms_agreed',
+      status: ContractStatus.TERMS_AGREED,
       agreed_deliverables: contract.proposed_deliverables,
       agreed_amount: contract.proposed_amount,
+      agreed_delivery_date: contract.proposed_delivery_date,
+      agreed_revisions: contract.proposed_revisions,
       agreed_at: new Date().toISOString(),
       proposed_deliverables: null,
       proposed_amount: null,
+      proposed_timeline: null,
+      proposed_delivery_date: null,
+      proposed_revisions: null,
+      proposal_sender_id: null,
+      payment_plan: null,
     })
     .eq('id', contractId)
-    .eq('client_id', user.id)
 
   if (error) return { error: error.message }
-  revalidatePath(`/contracts/${contractId}`)
+
+  await supabase.from('messages').insert({
+    contract_id: contractId,
+    sender_id: user.id,
+    content: `[Terms agreed] Final price: ₹${contract.proposed_amount.toLocaleString('en-IN')} · Deliverables locked`,
+  })
+
+  revalidateContract(contractId)
   return null
 }
 
@@ -159,13 +222,13 @@ export async function startWork(contractId: string): Promise<{ error: string } |
 
   const { error } = await supabase
     .from('contracts')
-    .update({ status: 'in_progress' })
+    .update({ status: ContractStatus.IN_PROGRESS })
     .eq('id', contractId)
     .eq('client_id', user.id)
-    .eq('status', 'terms_agreed')
+    .eq('status', ContractStatus.TERMS_AGREED)
 
   if (error) return { error: error.message }
-  revalidatePath(`/contracts/${contractId}`)
+  revalidateContract(contractId)
   return null
 }
 
@@ -179,24 +242,30 @@ export async function submitWork(
 
   const contractId = formData.get('contract_id') as string
   const note = formData.get('note') as string
+  const completedDeliverables = formData.getAll('completed_deliverables') as string[]
 
   if (!note?.trim()) return { error: 'Please describe what you are submitting' }
+
+  let content = `[Deliverables submitted] ${note.trim()}`
+  if (completedDeliverables.length > 0) {
+    content += `\n\nCompleted Scope:\n${completedDeliverables.map(d => `✓ ${d}`).join('\n')}`
+  }
 
   await supabase.from('messages').insert({
     contract_id: contractId,
     sender_id: user.id,
-    content: `[Deliverables submitted] ${note.trim()}`,
+    content,
   })
 
   const { error } = await supabase
     .from('contracts')
-    .update({ status: 'in_review' })
+    .update({ status: ContractStatus.IN_REVIEW })
     .eq('id', contractId)
     .eq('draftsman_id', user.id)
-    .eq('status', 'in_progress')
+    .eq('status', ContractStatus.IN_PROGRESS)
 
   if (error) return { error: error.message }
-  revalidatePath(`/contracts/${contractId}`)
+  revalidateContract(contractId)
   return null
 }
 
@@ -210,15 +279,15 @@ export async function approveWork(contractId: string): Promise<{ error: string }
     .select('job_id')
     .eq('id', contractId)
     .eq('client_id', user.id)
-    .eq('status', 'in_review')
+    .eq('status', ContractStatus.IN_REVIEW)
     .single()
 
   if (!contract) return { error: 'Contract not found' }
 
-  await supabase.from('contracts').update({ status: 'completed' }).eq('id', contractId)
+  await supabase.from('contracts').update({ status: ContractStatus.COMPLETED }).eq('id', contractId)
   await supabase.from('jobs').update({ status: 'completed' }).eq('id', contract.job_id)
 
-  revalidatePath(`/contracts/${contractId}`)
+  revalidateContract(contractId)
   revalidatePath('/contracts')
   return null
 }
@@ -244,13 +313,13 @@ export async function requestRevision(
 
   const { error } = await supabase
     .from('contracts')
-    .update({ status: 'revision_requested' })
+    .update({ status: ContractStatus.REVISION_REQUESTED })
     .eq('id', contractId)
     .eq('client_id', user.id)
-    .eq('status', 'in_review')
+    .eq('status', ContractStatus.IN_REVIEW)
 
   if (error) return { error: error.message }
-  revalidatePath(`/contracts/${contractId}`)
+  revalidateContract(contractId)
   return null
 }
 
@@ -261,13 +330,13 @@ export async function acknowledgeRevision(contractId: string): Promise<{ error: 
 
   const { error } = await supabase
     .from('contracts')
-    .update({ status: 'in_progress' })
+    .update({ status: ContractStatus.IN_PROGRESS })
     .eq('id', contractId)
     .eq('draftsman_id', user.id)
-    .eq('status', 'revision_requested')
+    .eq('status', ContractStatus.REVISION_REQUESTED)
 
   if (error) return { error: error.message }
-  revalidatePath(`/contracts/${contractId}`)
+  revalidateContract(contractId)
   return null
 }
 
@@ -278,12 +347,12 @@ export async function cancelContract(contractId: string): Promise<{ error: strin
 
   const { error } = await supabase
     .from('contracts')
-    .update({ status: 'cancelled' })
+    .update({ status: ContractStatus.CANCELLED })
     .eq('id', contractId)
-    .in('status', ['offer_sent', 'client_turn', 'draftsman_turn', 'terms_agreed'])
+    .in('status', CANCELLABLE_STATUSES)
 
   if (error) return { error: error.message }
-  revalidatePath(`/contracts/${contractId}`)
+  revalidateContract(contractId)
   revalidatePath('/contracts')
   return null
 }

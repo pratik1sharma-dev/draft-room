@@ -1,17 +1,21 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import Groq from 'groq-sdk'
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY!)
-
-export function getModel(model = 'gemini-2.0-flash') {
-  return genAI.getGenerativeModel({ model })
-}
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
 
 export async function generateJSON<T>(prompt: string, systemPrompt: string): Promise<T> {
-  const model = getModel()
-  const result = await model.generateContent({
-    systemInstruction: systemPrompt,
-    contents: [{ role: 'user', parts: [{ text: prompt }] }],
-    generationConfig: { responseMimeType: 'application/json' },
+  console.log('[Groq] prompt:', prompt)
+
+  const completion = await groq.chat.completions.create({
+    model: 'qwen/qwen3-32b',
+    messages: [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: prompt },
+    ],
+    response_format: { type: 'json_object' },
+    temperature: 0.4,
   })
-  return JSON.parse(result.response.text()) as T
+
+  const raw = completion.choices[0].message.content ?? '{}'
+  console.log('[Groq] response:', raw)
+  return JSON.parse(raw) as T
 }

@@ -1,5 +1,16 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+
+export const metadata: Metadata = {
+  title: "About DraftRoom — India's Dedicated Drafting Marketplace",
+  description: "Learn why we built DraftRoom — India's first marketplace for architects to find and hire verified CAD draftsmen. Built by architects, for architects.",
+  openGraph: {
+    title: "About DraftRoom — India's Drafting Marketplace",
+    url: 'https://draftroom.in/about',
+  },
+  alternates: { canonical: 'https://draftroom.in/about' },
+}
 
 export default function AboutPage() {
   return (

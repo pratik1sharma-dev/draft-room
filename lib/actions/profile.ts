@@ -36,6 +36,8 @@ export async function updateProfile(
 
   if (userError) return { error: userError.message }
 
+  const avatarUrl = (formData.get('avatar_url') as string) || null
+
   if (userData.role === 'draftsman') {
     const bio = (formData.get('bio') as string) || null
     const skills = formData.getAll('skills') as string[]
@@ -55,6 +57,7 @@ export async function updateProfile(
     const { error: profileError } = await supabase
       .from('profiles')
       .update({
+        avatar_url: avatarUrl,
         bio,
         skills,
         hourly_rate: hourlyRate,
@@ -74,7 +77,11 @@ export async function updateProfile(
 
     const { error: profileError } = await supabase
       .from('profiles')
-      .update({ firm_name: firmName, project_types: projectTypes })
+      .update({ 
+        avatar_url: avatarUrl,
+        firm_name: firmName, 
+        project_types: projectTypes 
+      })
       .eq('user_id', user.id)
 
     if (profileError) return { error: profileError.message }

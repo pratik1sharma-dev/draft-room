@@ -1,5 +1,16 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+
+export const metadata: Metadata = {
+  title: 'Hire Verified CAD Draftsmen for Architecture Projects in India | DraftRoom',
+  description: "India's first dedicated drafting marketplace. Find AutoCAD, Revit, SketchUp, structural, and interiors draftsmen across India. Verified portfolios, structured delivery.",
+  openGraph: {
+    title: 'Hire Verified CAD Draftsmen in India | DraftRoom',
+    description: "India's first dedicated drafting marketplace. Find AutoCAD, Revit, SketchUp draftsmen across India.",
+    url: 'https://draftroom.in',
+  },
+}
 
 const features = [
   {
