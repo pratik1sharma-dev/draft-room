@@ -15,8 +15,11 @@ export const metadata: Metadata = {
 import { JobCard } from '@/components/marketplace/job-card'
 import { SkillFilter } from '@/components/marketplace/skill-filter'
 import { createClient } from '@/lib/supabase/server'
+import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
+
+const PREVIEW_LIMIT = 6
 
 interface Props {
   searchParams: Promise<{ skill?: string; budget_type?: string }>
@@ -31,6 +34,7 @@ async function JobsGrid({ searchParams }: Props) {
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+  const isLoggedIn = !!user
   let appliedJobIds: string[] = []
 
   if (user) {
@@ -38,11 +42,11 @@ async function JobsGrid({ searchParams }: Props) {
       .from('applications')
       .select('job_id')
       .eq('draftsman_id', user.id)
-    
-    if (apps) {
-      appliedJobIds = apps.map(a => a.job_id)
-    }
+    if (apps) appliedJobIds = apps.map(a => a.job_id)
   }
+
+  const visible = isLoggedIn ? jobs : jobs.slice(0, PREVIEW_LIMIT)
+  const hiddenCount = isLoggedIn ? 0 : Math.max(0, jobs.length - PREVIEW_LIMIT)
 
   return (
     <>
@@ -51,13 +55,39 @@ async function JobsGrid({ searchParams }: Props) {
           No projects found matching your filters.
         </div>
       ) : (
-        jobs.map((job: any) => (
-          <JobCard 
-            key={job.id} 
-            job={job} 
-            hasApplied={appliedJobIds.includes(job.id)} 
-          />
-        ))
+        <>
+          {visible.map((job: any) => (
+            <JobCard key={job.id} job={job} hasApplied={appliedJobIds.includes(job.id)} />
+          ))}
+          {hiddenCount > 0 && (
+            <div className="mt-4 blueprint-card p-8 text-center">
+              <p className="text-lg font-semibold text-[var(--color-blueprint-text-primary)] mb-1">
+                {hiddenCount} more project{hiddenCount !== 1 ? 's' : ''} available
+              </p>
+              <p className="text-sm text-[var(--color-blueprint-text-secondary)] mb-6">
+                Create a free drafter account to see all open projects and start applying.
+              </p>
+              <div className="flex gap-3 justify-center flex-wrap">
+                <Link
+                  href="/signup?role=drafter"
+                  className="inline-block bg-[var(--color-blueprint-accent)] text-white text-sm font-medium px-5 py-2.5 rounded-md hover:opacity-90 transition-opacity"
+                >
+                  Join as Drafter — It's Free
+                </Link>
+                <Link
+                  href="/signup?role=client"
+                  className="inline-block border border-[var(--color-blueprint-border-strong)] text-[var(--color-blueprint-text-primary)] text-sm font-medium px-5 py-2.5 rounded-md hover:border-[var(--color-blueprint-accent)]/50 transition-colors"
+                >
+                  Sign up as Project Owner
+                </Link>
+              </div>
+              <p className="text-xs text-[var(--color-blueprint-text-muted)] mt-4">
+                Already have an account?{' '}
+                <Link href="/login" className="text-[var(--color-blueprint-accent)] hover:underline">Log in</Link>
+              </p>
+            </div>
+          )}
+        </>
       )}
     </>
   )
