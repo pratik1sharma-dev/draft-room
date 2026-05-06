@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: 'Find open CAD drafting projects posted by architects and designers across India. AutoCAD, Revit, SketchUp, structural drawings — apply today.',
   openGraph: {
     title: 'Browse CAD Drafting Projects | DraftRoom',
-    description: 'Open drafting projects across India. Apply as a verified draftsman.',
+    description: 'Open drafting projects across India. Apply as a verified drafter.',
     url: 'https://draftroom.in/projects',
   },
   alternates: { canonical: 'https://draftroom.in/projects' },

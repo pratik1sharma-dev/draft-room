@@ -69,7 +69,7 @@ export default function SignupPage() {
             )}
           >
             <p className="font-medium text-[var(--color-blueprint-text-primary)] text-sm">
-              {r === 'client' ? 'I need a draftsman' : 'I am a draftsman'}
+              {r === 'client' ? 'I need a drafter' : 'I am a drafter'}
             </p>
             <p className="text-xs text-[var(--color-blueprint-text-muted)] mt-0.5">
               {r === 'client' ? 'Post jobs, hire talent' : 'Find work, get paid'}
