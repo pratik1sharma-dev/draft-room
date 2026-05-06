@@ -81,7 +81,7 @@ async function ClientApplications({ userId }: { userId: string }) {
                   <div className="flex items-start justify-between flex-wrap gap-3">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <Link href={`/draftsmen/${app.draftsman_id}`} className="font-medium text-[var(--color-blueprint-text-primary)] hover:text-[var(--color-blueprint-accent)]">
+                        <Link href={`/drafters/${app.draftsman_id}`} className="font-medium text-[var(--color-blueprint-text-primary)] hover:text-[var(--color-blueprint-accent)]">
                           {app.users.name}
                         </Link>
                         {app.profiles.is_verified && <Badge variant="verified">Verified</Badge>}

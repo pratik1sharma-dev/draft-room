@@ -11,7 +11,7 @@ export default function robots(): MetadataRoute.Robots {
         '/applications',
         '/profile',
         '/post-project',
-        '/draftsmen/*/hire',
+        '/drafters/*/hire',
       ],
     },
     sitemap: 'https://draftroom.in/sitemap.xml',

@@ -7,7 +7,7 @@ import { ACTIVE_THEME } from '@/lib/config/theme'
 export const metadata: Metadata = {
   metadataBase: new URL('https://draftroom.in'),
   title: {
-    default: 'DraftRoom — Hire CAD Draftsmen for Architecture Projects in India',
+    default: 'DraftRoom — Hire CAD Drafters for Architecture Projects in India',
     template: '%s | DraftRoom',
   },
   description: 'Find AutoCAD, Revit, SketchUp, structural, and interiors drafters across India. Verified portfolios, structured delivery.',

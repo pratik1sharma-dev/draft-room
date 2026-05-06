@@ -6,7 +6,7 @@ import { getApplicationsForJob } from '@/lib/data/applications'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ApplyForm } from '@/components/marketplace/apply-form'
-import { SuggestedDraftsmen } from '@/components/marketplace/suggested-draftsmen'
+import { SuggestedDraftsmen } from '@/components/marketplace/suggested-drafters'
 import { getSuggestedDraftsmen } from '@/lib/data/draftsmen'
 import { acceptApplication, rejectApplication } from '@/lib/actions/applications'
 import Link from 'next/link'
@@ -91,7 +91,7 @@ export default async function JobDetailPage({
     <main className="max-w-4xl mx-auto px-6 py-12">
       {posted && (
         <div className="mb-6 p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm">
-          Job posted successfully! Draftsmen can now apply.
+          Job posted successfully! Drafters can now apply.
         </div>
       )}
 
@@ -198,7 +198,7 @@ export default async function JobDetailPage({
           {!user && (
             <div className="blueprint-card p-5 text-center">
               <p className="text-sm text-[var(--color-blueprint-text-secondary)] mb-3">
-                Sign in as a draftsman to apply
+                Sign in as a drafter to apply
               </p>
               <a href="/login" className="text-[var(--color-blueprint-accent)] text-sm hover:underline">
                 Sign in →
@@ -218,7 +218,7 @@ export default async function JobDetailPage({
               <div key={app.id} className="blueprint-card p-5 flex items-start justify-between flex-wrap gap-3">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <Link href={`/draftsmen/${app.draftsman_id}`} className="font-medium text-[var(--color-blueprint-text-primary)] hover:text-[var(--color-blueprint-accent)]">
+                    <Link href={`/drafters/${app.draftsman_id}`} className="font-medium text-[var(--color-blueprint-text-primary)] hover:text-[var(--color-blueprint-accent)]">
                       {app.users.name}
                     </Link>
                     {app.profiles?.is_verified && <Badge variant="verified">Verified</Badge>}

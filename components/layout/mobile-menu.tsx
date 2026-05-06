@@ -34,8 +34,8 @@ export function MobileMenu({ isLoggedIn, role }: MobileMenuProps) {
           className="absolute top-16 left-0 right-0 bg-[var(--color-blueprint-bg)] border-b border-[var(--color-blueprint-border)] px-6 py-4 space-y-1 z-40"
           onClick={() => setOpen(false)}
         >
-          <Link href="/draftsmen" className="block py-2.5 text-sm text-[var(--color-blueprint-text-secondary)] hover:text-[var(--color-blueprint-text-primary)]">
-            Find Draftsmen
+          <Link href="/drafters" className="block py-2.5 text-sm text-[var(--color-blueprint-text-secondary)] hover:text-[var(--color-blueprint-text-primary)]">
+            Find Drafters
           </Link>
           <Link href="/projects" className="block py-2.5 text-sm text-[var(--color-blueprint-text-secondary)] hover:text-[var(--color-blueprint-text-primary)]">
             Browse Projects

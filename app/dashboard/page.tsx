@@ -41,7 +41,7 @@ export default async function DashboardPage() {
             ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
             : 'bg-[var(--color-blueprint-accent)]/10 text-[var(--color-blueprint-accent)] border-[var(--color-blueprint-accent)]/30'
         }`}>
-          {isClient ? 'Client' : 'Draftsman'}
+          {isClient ? 'Project Owner' : 'Drafter'}
         </span>
       </div>
 
@@ -49,7 +49,7 @@ export default async function DashboardPage() {
         <div className="mb-6 p-4 rounded-lg border border-amber-500/30 bg-amber-500/5 flex items-center justify-between gap-4 flex-wrap">
           <p className="text-sm text-amber-400">
             {isClient
-              ? 'Complete your profile — add your city and state so draftsmen know where you\'re based.'
+              ? 'Complete your profile — add your city and state so drafters know where you\'re based.'
               : 'Add your bio and skills — required before you can apply to projects.'}
           </p>
           <Button size="sm" asChild>
@@ -76,7 +76,7 @@ async function ClientDashboard({ userId }: { userId: string }) {
     <div className="space-y-8">
       <div className="flex gap-3 flex-wrap">
         <Button asChild><Link href="/post-project">Post a Project →</Link></Button>
-        <Button variant="outline" asChild><Link href="/draftsmen">Browse Draftsmen</Link></Button>
+        <Button variant="outline" asChild><Link href="/drafters">Browse Drafters</Link></Button>
         <Button variant="outline" asChild><Link href="/profile/edit">Edit Profile</Link></Button>
       </div>
 
@@ -131,10 +131,10 @@ async function ClientDashboard({ userId }: { userId: string }) {
       {activeProjects.length === 0 && (
         <div className="blueprint-card p-8 text-center">
           <p className="text-[var(--color-blueprint-text-secondary)] mb-2">No active projects yet.</p>
-          <p className="text-sm text-[var(--color-blueprint-text-muted)] mb-4">Post a project or hire a draftsman directly.</p>
+          <p className="text-sm text-[var(--color-blueprint-text-muted)] mb-4">Post a project or hire a drafter directly.</p>
           <div className="flex gap-3 justify-center">
             <Button asChild><Link href="/post-project">Post a Project →</Link></Button>
-            <Button variant="outline" asChild><Link href="/draftsmen">Browse Draftsmen</Link></Button>
+            <Button variant="outline" asChild><Link href="/drafters">Browse Drafters</Link></Button>
           </div>
         </div>
       )}
@@ -155,7 +155,7 @@ async function DraftsmanDashboard({ userId }: { userId: string }) {
         <Button asChild><Link href="/projects">Find Projects →</Link></Button>
         <Button variant="outline" asChild><Link href="/contracts">My Contracts</Link></Button>
         <Button variant="outline" asChild><Link href="/applications">My Applications</Link></Button>
-        <Button variant="outline" asChild><Link href={`/draftsmen/${userId}`}>View Profile</Link></Button>
+        <Button variant="outline" asChild><Link href={`/drafters/${userId}`}>View Profile</Link></Button>
         <Button variant="outline" asChild><Link href="/profile/edit">Edit Profile</Link></Button>
       </div>
 

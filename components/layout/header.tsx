@@ -33,8 +33,8 @@ export async function Header() {
         </Link>
 
         <nav className="hidden md:flex items-center gap-6">
-          <Link href="/draftsmen" className="text-sm text-[var(--color-blueprint-text-secondary)] hover:text-[var(--color-blueprint-text-primary)] transition-colors">
-            Find Draftsmen
+          <Link href="/drafters" className="text-sm text-[var(--color-blueprint-text-secondary)] hover:text-[var(--color-blueprint-text-primary)] transition-colors">
+            Find Drafters
           </Link>
           <Link href="/projects" className="text-sm text-[var(--color-blueprint-text-secondary)] hover:text-[var(--color-blueprint-text-primary)] transition-colors">
             Browse Projects

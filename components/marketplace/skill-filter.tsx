@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 const SKILLS = ['AutoCAD', 'Revit', 'SketchUp', '3D Rendering', 'Structural Drawings', 'BIM']
 
 interface SkillFilterProps {
-  type: 'draftsmen' | 'jobs'
+  type: 'drafters' | 'jobs'
 }
 
 export function SkillFilter({ type }: SkillFilterProps) {
@@ -35,7 +35,7 @@ export function SkillFilter({ type }: SkillFilterProps) {
         {SKILLS.map(s => <option key={s} value={s}>{s}</option>)}
       </Select>
 
-      {type === 'draftsmen' && (
+      {type === 'drafters' && (
         <>
           <input
             type="text"

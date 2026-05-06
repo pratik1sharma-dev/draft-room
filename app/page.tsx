@@ -3,11 +3,11 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 
 export const metadata: Metadata = {
-  title: 'Hire Verified CAD Draftsmen for Architecture Projects in India | DraftRoom',
-  description: "India's first dedicated drafting marketplace. Find AutoCAD, Revit, SketchUp, structural, and interiors draftsmen across India. Verified portfolios, structured delivery.",
+  title: 'Hire Verified CAD Drafters for Architecture Projects in India | DraftRoom',
+  description: "India's first dedicated drafting marketplace. Find AutoCAD, Revit, SketchUp, structural, and interiors drafters across India. Verified portfolios, structured delivery.",
   openGraph: {
-    title: 'Hire Verified CAD Draftsmen in India | DraftRoom',
-    description: "India's first dedicated drafting marketplace. Find AutoCAD, Revit, SketchUp draftsmen across India.",
+    title: 'Hire Verified CAD Drafters in India | DraftRoom',
+    description: "India's first dedicated drafting marketplace. Find AutoCAD, Revit, SketchUp drafters across India.",
     url: 'https://draftroom.in',
   },
 }
@@ -15,8 +15,8 @@ export const metadata: Metadata = {
 const features = [
   {
     ref: 'REF: 001',
-    title: 'Verified Draftsmen',
-    desc: 'Every draftsman is manually reviewed. Portfolio checked, credentials verified. No guesswork.',
+    title: 'Verified Drafters',
+    desc: 'Every drafter is manually reviewed. Portfolio checked, credentials verified. No guesswork.',
   },
   {
     ref: 'REF: 002',
@@ -31,7 +31,7 @@ const features = [
 ]
 
 const steps = [
-  { n: '01', title: 'Post a project or browse draftsmen', desc: 'Describe your project or search directly by skill and city.' },
+  { n: '01', title: 'Post a project or browse drafters', desc: 'Describe your project or search directly by skill and city.' },
   { n: '02', title: 'Review and hire', desc: 'See portfolios, reviews, and rates. Accept an application or send a direct offer.' },
   { n: '03', title: 'Share requirements and track progress', desc: 'Share your brief, drawings, and reference files. Agree on milestones before work starts.' },
   { n: '04', title: 'Review and approve', desc: 'Review deliverables, request revisions if needed, then mark the project complete.' },
@@ -49,12 +49,12 @@ export default function LandingPage() {
           </div>
 
           <h1 className="text-5xl md:text-7xl font-bold text-[var(--color-blueprint-text-primary)] tracking-tight mb-6 leading-tight">
-            Hire verified CAD draftsmen<br />
+            Hire verified CAD drafters<br />
             <span className="text-[var(--color-blueprint-accent)]">for architecture projects.</span>
           </h1>
 
           <p className="text-xl text-[var(--color-blueprint-text-secondary)] max-w-2xl mx-auto mb-10">
-            AutoCAD, Revit, SketchUp, structural drawings, interiors — skilled draftsmen across India, ready to hire.
+            AutoCAD, Revit, SketchUp, structural drawings, interiors — skilled drafters across India, ready to hire.
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center">
@@ -62,7 +62,7 @@ export default function LandingPage() {
               <Link href="/signup?role=client">Post a Project — It's Free</Link>
             </Button>
             <Button variant="outline" size="lg" asChild>
-              <Link href="/signup?role=draftsman">Join as Draftsman</Link>
+              <Link href="/signup?role=drafter">Join as Drafter</Link>
             </Button>
           </div>
 
@@ -74,7 +74,7 @@ export default function LandingPage() {
           </div>
 
           <p className="text-xs text-[var(--color-blueprint-text-muted)] mt-5">
-            First 100 draftsmen and clients earn a{' '}
+            First 100 drafters and clients earn a{' '}
             <span className="text-amber-400">Founding Member</span> badge.
           </p>
         </div>
@@ -126,14 +126,14 @@ export default function LandingPage() {
             Ready to find your drafting partner?
           </h2>
           <p className="text-[var(--color-blueprint-text-secondary)] mb-8">
-            Join the community of architects and draftsmen building India's best technical drawings.
+            Join the community of architects and drafters building India's best technical drawings.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Button size="lg" asChild>
               <Link href="/signup?role=client">Post a Project</Link>
             </Button>
             <Button variant="outline" size="lg" asChild>
-              <Link href="/draftsmen">Browse Draftsmen</Link>
+              <Link href="/drafters">Browse Drafters</Link>
             </Button>
           </div>
         </div>

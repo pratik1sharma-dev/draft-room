@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 const SOFTWARE_GUIDES = [
   {
     title: 'AutoCAD for Beginners',
-    description: 'Commands, shortcuts, and workflows every draftsman needs to know.',
+    description: 'Commands, shortcuts, and workflows every drafter needs to know.',
     tag: 'AutoCAD',
     link: 'https://knowledge.autodesk.com/support/autocad/getting-started',
   },
@@ -69,7 +69,7 @@ const FREELANCE_TIPS = [
   },
   {
     title: 'Protecting yourself with contracts',
-    description: 'Key clauses every freelance draftsman should include before starting work.',
+    description: 'Key clauses every freelance drafter should include before starting work.',
     tag: 'Legal',
   },
   {
@@ -88,7 +88,7 @@ export default function ResourcesPage() {
           Resources
         </h1>
         <p className="text-[var(--color-blueprint-text-secondary)] max-w-2xl">
-          Guides, standards, and tips for draftsmen and architecture firms working in India.
+          Guides, standards, and tips for drafters and architecture firms working in India.
         </p>
       </div>
 
@@ -171,7 +171,7 @@ export default function ResourcesPage() {
           Join the DraftRoom Community
         </h2>
         <p className="text-[var(--color-blueprint-text-secondary)] mb-6 max-w-lg mx-auto text-sm">
-          Ask questions, share work, get feedback, and connect with other draftsmen and architecture firms across India.
+          Ask questions, share work, get feedback, and connect with other drafters and architecture firms across India.
         </p>
         <Button asChild>
           <a href="https://discord.gg/draftroom" target="_blank" rel="noopener noreferrer">

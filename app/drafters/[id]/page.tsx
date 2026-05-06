@@ -17,21 +17,21 @@ export async function generateMetadata({
   const { id } = await params
   const profile = await getDraftsman(id) as any
   if (!profile) return {}
-  const name = profile.users?.name ?? 'CAD Draftsman'
+  const name = profile.users?.name ?? 'CAD Drafter'
   const skills = profile.skills?.slice(0, 3).join(', ') ?? 'CAD drafting'
   const location = [profile.users?.city, profile.users?.state].filter(Boolean).join(', ') || 'India'
   const description = profile.bio
     ? profile.bio.slice(0, 155) + (profile.bio.length > 155 ? '…' : '')
     : `Hire ${name} for ${skills} drafting projects. Based in ${location}.`
   return {
-    title: `${name} — CAD Draftsman in ${location}`,
+    title: `${name} — CAD Drafter in ${location}`,
     description,
     openGraph: {
       title: `${name} | DraftRoom`,
       description,
-      url: `https://draftroom.in/draftsmen/${id}`,
+      url: `https://draftroom.in/drafters/${id}`,
     },
-    alternates: { canonical: `https://draftroom.in/draftsmen/${id}` },
+    alternates: { canonical: `https://draftroom.in/drafters/${id}` },
   }
 }
 
@@ -75,7 +75,7 @@ export default async function DraftsmanProfilePage({
 
           {isClient && (
             <Button asChild>
-              <Link href={`/draftsmen/${id}/hire`}>Hire Directly →</Link>
+              <Link href={`/drafters/${id}/hire`}>Hire Directly →</Link>
             </Button>
           )}
 

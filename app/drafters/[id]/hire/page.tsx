@@ -24,7 +24,7 @@ export default async function DirectHirePage({
     .eq('id', user.id)
     .single()
 
-  if (userData?.role !== 'client') redirect(`/draftsmen/${draftsmanId}`)
+  if (userData?.role !== 'client') redirect(`/drafters/${draftsmanId}`)
 
   const { data: draftsmanUser } = await supabase
     .from('users')
@@ -48,7 +48,7 @@ export default async function DirectHirePage({
 
       <HireForm
         draftsmanId={draftsmanId}
-        draftsmanName={draftsmanUser?.name ?? 'this draftsman'}
+        draftsmanName={draftsmanUser?.name ?? 'this drafter'}
         existingJobs={jobs ?? []}
         preselectedJobId={preselectedJobId}
       />

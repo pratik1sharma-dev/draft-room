@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 
-interface SuggestedDraftsmenProps {
+interface SuggestedDraftersProps {
   draftsmen: Array<{
     user_id: string
     skills: string[]
@@ -12,20 +12,20 @@ interface SuggestedDraftsmenProps {
   jobId: string
 }
 
-export function SuggestedDraftsmen({ draftsmen, jobId }: SuggestedDraftsmenProps) {
+export function SuggestedDraftsmen({ draftsmen, jobId }: SuggestedDraftersProps) {
   if (draftsmen.length === 0) return null
 
   return (
     <div className="mt-8">
       <p className="blueprint-label mb-3">// SUGGESTED MATCHES</p>
       <h2 className="text-lg font-semibold text-[var(--color-blueprint-text-primary)] mb-4">
-        Draftsmen who match your job
+        Drafters who match your project
       </h2>
       <div className="space-y-3">
         {draftsmen.map(d => (
           <Link
             key={d.user_id}
-            href={`/draftsmen/${d.user_id}/hire?job_id=${jobId}`}
+            href={`/drafters/${d.user_id}/hire?job_id=${jobId}`}
             className="blueprint-card p-4 flex items-center justify-between hover:border-[var(--color-blueprint-accent)]/40 transition-colors"
           >
             <div>

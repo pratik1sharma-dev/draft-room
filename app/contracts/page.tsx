@@ -84,7 +84,7 @@ export default async function ContractsPage() {
                       </h3>
                       <p className="text-sm text-[var(--color-blueprint-text-secondary)]">
                         {userData.role === 'client'
-                          ? `Draftsman: ${contract.draftsman.name}`
+                          ? `Drafter: ${contract.draftsman.name}`
                           : `Client: ${contract.client.name}`}
                       </p>
                     </div>

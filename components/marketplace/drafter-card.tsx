@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 
-interface DraftsmanCardProps {
+interface DrafterCardProps {
   profile: {
     user_id: string
     skills: string[]
@@ -15,9 +15,9 @@ interface DraftsmanCardProps {
   }
 }
 
-export function DraftsmanCard({ profile }: DraftsmanCardProps) {
+export function DrafterCard({ profile }: DrafterCardProps) {
   return (
-    <Link href={`/draftsmen/${profile.user_id}`} className="blueprint-card p-5 block hover:border-[var(--color-blueprint-accent)]/40 transition-colors group">
+    <Link href={`/drafters/${profile.user_id}`} className="blueprint-card p-5 block hover:border-[var(--color-blueprint-accent)]/40 transition-colors group">
       <div className="flex items-start justify-between mb-3">
         <div>
           <div className="flex items-center gap-2 mb-0.5">

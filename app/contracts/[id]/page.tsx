@@ -57,7 +57,7 @@ export default async function ContractDetailPage({
               {c.jobs?.title}
             </h1>
             <p className="text-sm text-[var(--color-blueprint-text-muted)] mt-1">
-              {isClient ? `Draftsman: ${otherParty}` : `Client: ${otherParty}`}
+              {isClient ? `Drafter: ${otherParty}` : `Client: ${otherParty}`}
             </p>
           </div>
           <div className="text-right">
