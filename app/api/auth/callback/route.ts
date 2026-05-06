@@ -6,6 +6,7 @@ export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
   const next = searchParams.get('next') ?? '/dashboard'
+  const role = searchParams.get('role')
 
   if (code) {
     const cookieStore = await cookies()
@@ -24,7 +25,10 @@ export async function GET(request: NextRequest) {
       }
     )
     const { error } = await supabase.auth.exchangeCodeForSession(code)
-    if (!error) return NextResponse.redirect(`${origin}${next}`)
+    if (!error) {
+      const destination = role ? `${origin}${next}?role=${role}` : `${origin}${next}`
+      return NextResponse.redirect(destination)
+    }
   }
 
   return NextResponse.redirect(`${origin}/login?error=auth_callback_failed`)

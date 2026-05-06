@@ -77,7 +77,7 @@ async function ClientDashboard({ userId }: { userId: string }) {
       <div className="flex gap-3 flex-wrap">
         <Button asChild><Link href="/post-project">Post a Project →</Link></Button>
         <Button variant="outline" asChild><Link href="/draftsmen">Browse Draftsmen</Link></Button>
-        <Button variant="ghost" asChild><Link href="/profile/edit">Edit Profile</Link></Button>
+        <Button variant="outline" asChild><Link href="/profile/edit">Edit Profile</Link></Button>
       </div>
 
       {actionRequired.length > 0 && (
@@ -155,7 +155,8 @@ async function DraftsmanDashboard({ userId }: { userId: string }) {
         <Button asChild><Link href="/projects">Find Projects →</Link></Button>
         <Button variant="outline" asChild><Link href="/contracts">My Contracts</Link></Button>
         <Button variant="outline" asChild><Link href="/applications">My Applications</Link></Button>
-        <Button variant="ghost" asChild><Link href="/profile/edit">Edit Profile</Link></Button>
+        <Button variant="outline" asChild><Link href={`/draftsmen/${userId}`}>View Profile</Link></Button>
+        <Button variant="outline" asChild><Link href="/profile/edit">Edit Profile</Link></Button>
       </div>
 
       {actionRequired.length > 0 && (

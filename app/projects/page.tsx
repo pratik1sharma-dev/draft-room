@@ -64,8 +64,33 @@ async function JobsGrid({ searchParams }: Props) {
 }
 
 export default async function JobsPage(props: Props) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  let showProfileNudge = false
+  if (user) {
+    const [{ data: userData }, { data: profileData }] = await Promise.all([
+      supabase.from('users').select('role').eq('id', user.id).single(),
+      supabase.from('profiles').select('bio, skills').eq('user_id', user.id).single(),
+    ])
+    if (userData?.role === 'draftsman' && (!profileData?.bio?.trim() || !profileData?.skills?.length)) {
+      showProfileNudge = true
+    }
+  }
+
   return (
     <main className="max-w-4xl mx-auto px-6 py-12">
+      {showProfileNudge && (
+        <div className="mb-6 p-4 rounded-lg border border-amber-500/30 bg-amber-500/5 flex items-center justify-between gap-4 flex-wrap">
+          <p className="text-sm text-amber-400">
+            Add your bio and skills to your profile — required before you can apply to projects.
+          </p>
+          <a href="/profile/edit" className="text-sm font-medium text-amber-400 underline underline-offset-2 whitespace-nowrap">
+            Complete profile →
+          </a>
+        </div>
+      )}
+
       <div className="mb-8">
         <p className="blueprint-label mb-2">// OPEN PROJECTS</p>
         <h1 className="text-3xl font-bold text-[var(--color-blueprint-text-primary)] mb-4">
