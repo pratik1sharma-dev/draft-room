@@ -86,6 +86,38 @@ export async function sendApplicationRejectedEmail({
   } catch {}
 }
 
+export async function sendWelcomeEmail({
+  email, name, role,
+}: {
+  email: string
+  name: string
+  role: 'client' | 'draftsman'
+}) {
+  if (!isConfigured()) return
+  const isClient = role === 'client'
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to: email,
+      subject: `Welcome to DraftRoom, ${name} 👋`,
+      html: `
+        <p>Hi ${name},</p>
+        <p>Welcome to <strong>DraftRoom</strong> — India's marketplace for CAD drafting work.</p>
+        ${isClient ? `
+        <p>You're all set to post your first drafting project. Write a brief, review drafter portfolios, and agree on deliverables before work begins.</p>
+        <p><a href="${BASE_URL}/post-project">Post your first project →</a></p>
+        ` : `
+        <p>Your profile is live. Architects and project owners can now find you and send you projects directly.</p>
+        <p><a href="${BASE_URL}/projects">Browse open projects →</a></p>
+        `}
+        <p>If you have any questions, just reply to this email — we read every message.</p>
+        <hr />
+        <p style="font-size:12px;color:#888">DraftRoom — India's drafting marketplace</p>
+      `,
+    })
+  } catch {}
+}
+
 export async function sendDirectOfferEmail({
   drafterEmail, drafterName, clientName, projectTitle, contractId,
 }: {

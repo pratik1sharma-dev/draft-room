@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { clientOnboardingSchema, draftmanOnboardingSchema } from '@/lib/validations/onboarding'
+import { sendWelcomeEmail } from '@/lib/email/resend'
 
 export async function completeClientOnboarding(
   _prev: { error: string } | null,
@@ -35,6 +36,8 @@ export async function completeClientOnboarding(
     user_id: user.id, firm_name: firm_name ?? null, project_types,
   }, { onConflict: 'user_id' })
   if (profileError) return { error: profileError.message }
+
+  void sendWelcomeEmail({ email: user.email!, name, role: 'client' })
 
   redirect('/dashboard')
 }
@@ -73,6 +76,8 @@ export async function completeDraftmanOnboarding(
     linkedin_url: linkedin_url || null, availability: true,
   }, { onConflict: 'user_id' })
   if (profileError) return { error: profileError.message }
+
+  void sendWelcomeEmail({ email: user.email!, name, role: 'draftsman' })
 
   redirect('/dashboard')
 }

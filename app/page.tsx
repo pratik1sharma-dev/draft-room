@@ -4,10 +4,10 @@ import { Button } from '@/components/ui/button'
 
 export const metadata: Metadata = {
   title: 'Hire Verified CAD Drafters for Architecture Projects in India | DraftRoom',
-  description: "India's first dedicated drafting marketplace. Find AutoCAD, Revit, SketchUp, structural, and interiors drafters across India. Verified portfolios, structured delivery.",
+  description: "India's first dedicated drafting marketplace. Find AutoCAD, Revit, SketchUp, structural, and interiors drafters across India. Scope agreed before work starts.",
   openGraph: {
     title: 'Hire Verified CAD Drafters in India | DraftRoom',
-    description: "India's first dedicated drafting marketplace. Find AutoCAD, Revit, SketchUp drafters across India.",
+    description: "India's first dedicated drafting marketplace. Scope agreed. Work starts.",
     url: 'https://draftroom.in',
   },
 }
@@ -20,8 +20,8 @@ const features = [
   },
   {
     ref: 'REF: 002',
-    title: 'Structured Workflow',
-    desc: 'Agree on exact deliverables before work starts. Both sides confirm the brief — no surprises, no disputes.',
+    title: 'AI-Assisted Briefs',
+    desc: 'When you hire directly, AI turns your requirements into a structured project spec — deliverables, timeline, format. Both sides review and confirm before work starts.',
   },
   {
     ref: 'REF: 003',
@@ -30,11 +30,42 @@ const features = [
   },
 ]
 
+const audiences = [
+  {
+    label: 'For Architects',
+    title: 'Hire drafters who understand your workflow',
+    desc: 'Post requirements, review verified portfolios, and pick a drafter who matches your project and timeline.',
+    cta: 'Post a Project',
+    href: '/signup?role=client',
+  },
+  {
+    label: 'For Builders',
+    title: 'Structural, MEP, and site drawings — on demand',
+    desc: 'Find experienced drafters for your construction projects. Agree on deliverables before a single line is drawn.',
+    cta: 'Browse Drafters',
+    href: '/drafters',
+  },
+  {
+    label: 'For Drafters',
+    title: 'Get hired for what you\'re actually good at',
+    desc: 'Browse open projects, receive direct offers from clients, and work with a clear scope — no scope creep.',
+    cta: 'Join as Drafter',
+    href: '/signup?role=drafter',
+  },
+]
+
 const steps = [
   { n: '01', title: 'Post a project or browse drafters', desc: 'Describe your project or search directly by skill and city.' },
-  { n: '02', title: 'Review and hire', desc: 'See portfolios, reviews, and rates. Accept an application or send a direct offer.' },
-  { n: '03', title: 'Share requirements and track progress', desc: 'Share your brief, drawings, and reference files. Agree on milestones before work starts.' },
-  { n: '04', title: 'Review and approve', desc: 'Review deliverables, request revisions if needed, then mark the project complete.' },
+  { n: '02', title: 'Review portfolios and hire', desc: 'See portfolios, rates, and availability. Send a direct offer — AI helps generate the project brief.' },
+  { n: '03', title: 'Agree on scope before work starts', desc: 'Confirm deliverables, timeline, and rate. Both sides sign off before anything begins.' },
+  { n: '04', title: 'Review and approve', desc: 'Track progress milestone by milestone. Request revisions if needed, then mark it complete.' },
+]
+
+const trustSignals = [
+  { label: 'Verified Portfolios', desc: 'Every drafter manually reviewed' },
+  { label: 'AI-Assisted Briefs', desc: 'Structured spec generated automatically' },
+  { label: 'Dispute-Free Delivery', desc: 'Clear terms, no surprises' },
+  { label: 'India-Focused', desc: 'Built for Indian architects and drafters' },
 ]
 
 export default function LandingPage() {
@@ -45,7 +76,7 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 border border-[var(--color-blueprint-border-strong)] rounded-full px-4 py-1.5 text-sm text-[var(--color-blueprint-text-secondary)] mb-10">
             <span className="w-2 h-2 rounded-full bg-[var(--color-blueprint-accent)] animate-pulse" />
-            Now live — India's first dedicated drafting marketplace
+            Now live — AI-assisted briefs · verified drafters · structured delivery
           </div>
 
           <h1 className="text-5xl md:text-7xl font-bold text-[var(--color-blueprint-text-primary)] tracking-tight mb-6 leading-tight">
@@ -54,7 +85,7 @@ export default function LandingPage() {
           </h1>
 
           <p className="text-xl text-[var(--color-blueprint-text-secondary)] max-w-2xl mx-auto mb-10">
-            AutoCAD, Revit, SketchUp, structural drawings, interiors — skilled drafters across India, ready to hire.
+            Connecting architects, builders &amp; drafters across India — scope agreed before work starts.
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center">
@@ -66,14 +97,7 @@ export default function LandingPage() {
             </Button>
           </div>
 
-          <div className="flex flex-wrap gap-3 justify-center mt-8">
-            <span className="text-xs text-[var(--color-blueprint-text-muted)] border border-[var(--color-blueprint-border)] rounded-full px-3 py-1">Verified portfolios</span>
-            <span className="text-xs text-[var(--color-blueprint-text-muted)] border border-[var(--color-blueprint-border)] rounded-full px-3 py-1">Structured delivery</span>
-            <span className="text-xs text-[var(--color-blueprint-text-muted)] border border-[var(--color-blueprint-border)] rounded-full px-3 py-1">India-focused</span>
-            <span className="text-xs text-[var(--color-blueprint-text-muted)] border border-[var(--color-blueprint-border)] rounded-full px-3 py-1">No commission until MVP</span>
-          </div>
-
-          <p className="text-xs text-[var(--color-blueprint-text-muted)] mt-5">
+          <p className="text-xs text-[var(--color-blueprint-text-muted)] mt-8">
             First 100 drafters and clients earn a{' '}
             <span className="text-amber-400">Founding Member</span> badge.
           </p>
@@ -99,22 +123,64 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* How it works */}
+      {/* Audience cards */}
       <section className="py-20 px-6 border-t border-[var(--color-blueprint-border)] bg-[var(--color-blueprint-surface)]/40">
         <div className="max-w-5xl mx-auto">
-          <p className="blueprint-label mb-3">// HOW IT WORKS</p>
-          <h2 className="text-3xl font-bold text-[var(--color-blueprint-text-primary)] mb-12">Four steps to done</h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            {steps.map(s => (
-              <div key={s.n} className="flex gap-4">
-                <span className="text-4xl font-bold text-[var(--color-blueprint-accent)]/30 font-mono leading-none shrink-0">{s.n}</span>
-                <div>
-                  <h3 className="font-semibold text-[var(--color-blueprint-text-primary)] mb-1">{s.title}</h3>
-                  <p className="text-[var(--color-blueprint-text-secondary)] text-sm">{s.desc}</p>
-                </div>
+          <p className="blueprint-label mb-3">// WHO IT'S FOR</p>
+          <h2 className="text-3xl font-bold text-[var(--color-blueprint-text-primary)] mb-12 max-w-xl">
+            Built for every side of the project
+          </h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            {audiences.map(a => (
+              <div key={a.label} className="blueprint-card p-6 flex flex-col">
+                <p className="blueprint-label mb-3">{a.label.toUpperCase()}</p>
+                <h3 className="text-lg font-semibold text-[var(--color-blueprint-text-primary)] mb-2">{a.title}</h3>
+                <p className="text-[var(--color-blueprint-text-secondary)] text-sm leading-relaxed flex-1">{a.desc}</p>
+                <Link
+                  href={a.href}
+                  className="mt-5 text-sm font-medium text-[var(--color-blueprint-accent)] hover:underline"
+                >
+                  {a.cta} →
+                </Link>
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section className="py-20 px-6 border-t border-[var(--color-blueprint-border)]">
+        <div className="max-w-5xl mx-auto">
+          <p className="blueprint-label mb-3">// HOW IT WORKS</p>
+          <h2 className="text-3xl font-bold text-[var(--color-blueprint-text-primary)] mb-12">
+            Scope agreed. Work starts.
+          </h2>
+          <div className="grid md:grid-cols-4 gap-0">
+            {steps.map((s, i) => (
+              <div key={s.n} className="flex flex-col md:flex-row">
+                <div className="flex-1 flex flex-col items-start">
+                  <span className="text-3xl font-bold text-[var(--color-blueprint-accent)]/30 font-mono mb-3">{s.n}</span>
+                  <h3 className="font-semibold text-[var(--color-blueprint-text-primary)] mb-1 text-sm">{s.title}</h3>
+                  <p className="text-[var(--color-blueprint-text-muted)] text-xs leading-relaxed">{s.desc}</p>
+                </div>
+                {i < steps.length - 1 && (
+                  <div className="hidden md:flex items-start pt-4 px-3 text-[var(--color-blueprint-border-strong)] text-lg">→</div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Trust signals */}
+      <section className="py-12 px-6 border-t border-[var(--color-blueprint-border)] bg-[var(--color-blueprint-surface)]/40">
+        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+          {trustSignals.map(t => (
+            <div key={t.label} className="text-center">
+              <p className="font-semibold text-[var(--color-blueprint-text-primary)] text-sm mb-1">{t.label}</p>
+              <p className="text-xs text-[var(--color-blueprint-text-muted)]">{t.desc}</p>
+            </div>
+          ))}
         </div>
       </section>
 
