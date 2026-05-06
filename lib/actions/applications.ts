@@ -3,6 +3,12 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
+import {
+  sendApplicationReceivedEmail,
+  sendApplicationAcceptedEmail,
+  sendApplicationRejectedEmail,
+  sendDirectOfferEmail,
+} from '@/lib/email/resend'
 
 export async function applyToJob(
   _prev: { error: string } | null,
@@ -41,7 +47,22 @@ export async function applyToJob(
     return { error: error.message }
   }
 
-  revalidatePath(`/jobs/${jobId}`)
+  const [{ data: job }, { data: drafter }] = await Promise.all([
+    supabase.from('jobs').select('title, client_id, users!jobs_client_id_fkey(name, email)').eq('id', jobId).single(),
+    supabase.from('users').select('name').eq('id', user.id).single(),
+  ])
+  if (job && drafter) {
+    const client = (job as any).users
+    sendApplicationReceivedEmail({
+      clientEmail: client.email,
+      clientName: client.name,
+      drafterName: drafter.name,
+      projectTitle: job.title,
+      projectId: jobId,
+    })
+  }
+
+  revalidatePath(`/projects/${jobId}`)
   redirect('/applications')
 }
 
@@ -81,6 +102,20 @@ export async function acceptApplication(applicationId: string, jobId: string): P
 
   if (contractError) return { error: contractError.message }
 
+  const [{ data: contract }, { data: drafter }, { data: job }] = await Promise.all([
+    supabase.from('contracts').select('id').eq('job_id', jobId).eq('draftsman_id', application.draftsman_id).single(),
+    supabase.from('users').select('name, email').eq('id', application.draftsman_id).single(),
+    supabase.from('jobs').select('title').eq('id', jobId).single(),
+  ])
+  if (contract && drafter && job) {
+    sendApplicationAcceptedEmail({
+      drafterEmail: drafter.email,
+      drafterName: drafter.name,
+      projectTitle: job.title,
+      contractId: contract.id,
+    })
+  }
+
   revalidatePath('/applications')
   revalidatePath(`/projects/${jobId}`)
   revalidatePath('/contracts')
@@ -92,12 +127,32 @@ export async function rejectApplication(applicationId: string): Promise<{ error:
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
 
+  const { data: application } = await supabase
+    .from('applications')
+    .select('draftsman_id, job_id')
+    .eq('id', applicationId)
+    .single()
+
   const { error } = await supabase
     .from('applications')
     .update({ status: 'rejected' })
     .eq('id', applicationId)
 
   if (error) return { error: error.message }
+
+  if (application) {
+    const [{ data: drafter }, { data: job }] = await Promise.all([
+      supabase.from('users').select('name, email').eq('id', application.draftsman_id).single(),
+      supabase.from('jobs').select('title').eq('id', application.job_id).single(),
+    ])
+    if (drafter && job) {
+      sendApplicationRejectedEmail({
+        drafterEmail: drafter.email,
+        drafterName: drafter.name,
+        projectTitle: job.title,
+      })
+    }
+  }
 
   revalidatePath('/applications')
   return null
@@ -170,6 +225,22 @@ export async function sendDirectOffer(
   })
 
   if (contractError) return { error: contractError.message }
+
+  const [{ data: contract }, { data: drafter }, { data: client }, { data: jobData }] = await Promise.all([
+    supabase.from('contracts').select('id').eq('job_id', jobId).eq('draftsman_id', draftsmanId).single(),
+    supabase.from('users').select('name, email').eq('id', draftsmanId).single(),
+    supabase.from('users').select('name').eq('id', user.id).single(),
+    supabase.from('jobs').select('title').eq('id', jobId).single(),
+  ])
+  if (contract && drafter && client && jobData) {
+    sendDirectOfferEmail({
+      drafterEmail: drafter.email,
+      drafterName: drafter.name,
+      clientName: client.name,
+      projectTitle: jobData.title,
+      contractId: contract.id,
+    })
+  }
 
   redirect('/contracts')
 }

@@ -67,6 +67,9 @@ The `jobs.attachments` string[] column stores **deliverables** (lines from AI-ge
 - DB: `jobs` table, `job_id` columns
 - UI/routes/copy: "project" everywhere — never say "job" to users
 - Routes: `/projects`, `/post-project` (not `/jobs`)
+- DB/code role values: `'client'` and `'draftsman'` — never change these
+- UI copy uses "Drafter" (not "Draftsman") and "Project Owner" (not "Client") — display only, DB stays unchanged
+- Routes: `/drafters`, `/drafters/[id]` (not `/draftsmen`)
 
 ## Theming
 - All colours via CSS custom properties: `var(--color-blueprint-*)`

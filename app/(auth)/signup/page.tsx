@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -11,9 +11,11 @@ import { cn } from '@/lib/utils'
 type Role = 'client' | 'draftsman'
 
 export default function SignupPage() {
+  const searchParams = useSearchParams()
+  const initialRole: Role = searchParams.get('role') === 'draftsman' ? 'draftsman' : 'client'
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [role, setRole] = useState<Role>('client')
+  const [role, setRole] = useState<Role>(initialRole)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()

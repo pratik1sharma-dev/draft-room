@@ -59,6 +59,22 @@ export default async function DraftsmanProfilePage({
       {/* Header */}
       <div className="blueprint-card p-8 mb-6">
         <div className="flex items-start justify-between flex-wrap gap-4">
+          <div className="flex items-start gap-4">
+            {profile.avatar_url ? (
+              <Image
+                src={profile.avatar_url}
+                alt={(profile as any).users.name}
+                width={64}
+                height={64}
+                className="rounded-full object-cover shrink-0 border border-[var(--color-blueprint-border)]"
+              />
+            ) : (
+              <div className="w-16 h-16 rounded-full bg-[var(--color-blueprint-accent)]/10 border border-[var(--color-blueprint-border)] flex items-center justify-center shrink-0">
+                <span className="text-xl font-semibold text-[var(--color-blueprint-accent)]">
+                  {(profile as any).users.name.charAt(0).toUpperCase()}
+                </span>
+              </div>
+            )}
           <div>
             <div className="flex items-center gap-3 mb-1 flex-wrap">
               <h1 className="text-2xl font-bold text-[var(--color-blueprint-text-primary)]">
@@ -71,6 +87,7 @@ export default async function DraftsmanProfilePage({
             <p className="text-[var(--color-blueprint-text-secondary)]">
               {[(profile as any).users.city, (profile as any).users.state].filter(Boolean).join(', ')}
             </p>
+          </div>
           </div>
 
           {isClient && (
