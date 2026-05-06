@@ -50,7 +50,7 @@ async function DraftersGrid({ searchParams }: Props) {
           {hiddenCount > 0 && (
             <div className="col-span-full mt-4 blueprint-card p-8 text-center">
               <p className="text-lg font-semibold text-[var(--color-blueprint-text-primary)] mb-1">
-                {hiddenCount} more drafter{hiddenCount !== 1 ? 's' : ''} available
+                More drafters available
               </p>
               <p className="text-sm text-[var(--color-blueprint-text-secondary)] mb-6">
                 Create a free account to see all verified drafters, rates, and portfolios.

@@ -62,10 +62,10 @@ async function JobsGrid({ searchParams }: Props) {
           {hiddenCount > 0 && (
             <div className="mt-4 blueprint-card p-8 text-center">
               <p className="text-lg font-semibold text-[var(--color-blueprint-text-primary)] mb-1">
-                {hiddenCount} more project{hiddenCount !== 1 ? 's' : ''} available
+                More projects available
               </p>
               <p className="text-sm text-[var(--color-blueprint-text-secondary)] mb-6">
-                Create a free drafter account to see all open projects and start applying.
+                Create a free account to see all open projects and start applying.
               </p>
               <div className="flex gap-3 justify-center flex-wrap">
                 <Link
