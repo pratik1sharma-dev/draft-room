@@ -3,9 +3,13 @@ import './globals.css'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { ACTIVE_THEME } from '@/lib/config/theme'
+import { Analytics } from '@vercel/analytics/next'
+import { PostHogProvider } from '@/components/providers/posthog-provider'
+import { PostHogPageView } from '@/components/providers/posthog-pageview'
+import { Suspense } from 'react'
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://draftroom.in'),
+  metadataBase: new URL('https://www.thedraftroom.in'),
   title: {
     default: 'DraftRoom — Hire CAD Drafters for Architecture Projects in India',
     template: '%s | DraftRoom',
@@ -19,7 +23,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    site: '@draftroom_in',
+    site: '@thedraftroom_in',
   },
   robots: { index: true, follow: true },
 }
@@ -28,11 +32,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" data-theme={ACTIVE_THEME}>
       <body className="min-h-screen flex flex-col">
-        <Header />
-        <div className="pt-16 flex-1">
-          {children}
-        </div>
-        <Footer />
+        <PostHogProvider>
+          <Suspense fallback={null}>
+            <PostHogPageView />
+          </Suspense>
+          <Header />
+          <div className="pt-16 flex-1">
+            {children}
+          </div>
+          <Footer />
+        </PostHogProvider>
+        <Analytics />
       </body>
     </html>
   )
