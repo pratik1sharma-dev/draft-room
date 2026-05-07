@@ -1,6 +1,14 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { getAllPosts } from '@/lib/posts'
+
+export const metadata: Metadata = {
+  title: 'Resources — CAD Drafting Guides & Tips for India',
+  description: 'Guides, standards, and tips for CAD drafters and architecture firms in India. AutoCAD, Revit, SketchUp, freelancing, and Indian building codes.',
+  alternates: { canonical: 'https://www.thedraftroom.in/resources' },
+}
 
 const SOFTWARE_GUIDES = [
   {
@@ -80,6 +88,8 @@ const FREELANCE_TIPS = [
 ]
 
 export default function ResourcesPage() {
+  const posts = getAllPosts()
+
   return (
     <main className="max-w-5xl mx-auto px-6 py-12">
       <div className="mb-12">
@@ -91,6 +101,33 @@ export default function ResourcesPage() {
           Guides, standards, and tips for drafters and architecture firms working in India.
         </p>
       </div>
+
+      {/* Blog posts */}
+      {posts.length > 0 && (
+        <section className="mb-12">
+          <p className="blueprint-label mb-4">// ARTICLES</p>
+          <div className="grid md:grid-cols-2 gap-4">
+            {posts.map(post => (
+              <Link
+                key={post.slug}
+                href={`/resources/${post.slug}`}
+                className="blueprint-card p-5 hover:border-[var(--color-blueprint-accent)]/40 transition-colors group block"
+              >
+                <div className="flex flex-wrap gap-1.5 mb-2">
+                  {post.tags.slice(0, 2).map(tag => <Badge key={tag} variant="skill">{tag}</Badge>)}
+                </div>
+                <h3 className="font-semibold text-[var(--color-blueprint-text-primary)] group-hover:text-[var(--color-blueprint-accent)] transition-colors mb-1">
+                  {post.title}
+                </h3>
+                <p className="text-sm text-[var(--color-blueprint-text-secondary)] line-clamp-2 mb-3">{post.description}</p>
+                <p className="text-xs text-[var(--color-blueprint-text-muted)]">
+                  {new Date(post.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Software Guides */}
       <section className="mb-12">
