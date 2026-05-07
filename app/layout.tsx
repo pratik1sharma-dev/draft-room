@@ -3,6 +3,7 @@ import './globals.css'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { ACTIVE_THEME } from '@/lib/config/theme'
+import { Analytics } from '@vercel/analytics/next'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://draftroom.in'),
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </div>
         <Footer />
+        <Analytics />
       </body>
     </html>
   )
