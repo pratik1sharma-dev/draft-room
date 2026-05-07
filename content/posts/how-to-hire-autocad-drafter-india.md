@@ -71,4 +71,4 @@ The best hiring process is simple: be specific about what you need, check releva
 
 ---
 
-*Looking for a verified AutoCAD drafter? [Browse drafters on DraftRoom](/drafters) or [post your project](/signup?role=client) and get applications from qualified drafters across India.*
+*Looking for a verified AutoCAD drafter? [Browse drafters on DraftRoom](/drafters?utm_source=blog&utm_medium=internal&utm_campaign=cta) or [post your project](/signup?role=client&utm_source=blog&utm_medium=internal&utm_campaign=cta) and get applications from qualified drafters across India.*
