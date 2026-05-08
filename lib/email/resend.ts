@@ -3,8 +3,9 @@
 import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
-const FROM = 'DraftRoom <notifications@draftroom.in>'
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://draft-room-vert.vercel.app'
+const FROM = 'DraftRoom <notifications@thedraftroom.in>'
+const REPLY_TO = 'taaranhq@gmail.com'
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://www.thedraftroom.in'
 
 function isConfigured() {
   const key = process.env.RESEND_API_KEY
@@ -24,6 +25,7 @@ export async function sendApplicationReceivedEmail({
   try {
     await resend.emails.send({
       from: FROM,
+      replyTo: REPLY_TO,
       to: clientEmail,
       subject: `New application for "${projectTitle}"`,
       html: `
@@ -49,6 +51,7 @@ export async function sendApplicationAcceptedEmail({
   try {
     await resend.emails.send({
       from: FROM,
+      replyTo: REPLY_TO,
       to: drafterEmail,
       subject: `Your application was accepted — ${projectTitle}`,
       html: `
@@ -73,6 +76,7 @@ export async function sendApplicationRejectedEmail({
   try {
     await resend.emails.send({
       from: FROM,
+      replyTo: REPLY_TO,
       to: drafterEmail,
       subject: `Update on your application — ${projectTitle}`,
       html: `
@@ -98,6 +102,7 @@ export async function sendWelcomeEmail({
   try {
     await resend.emails.send({
       from: FROM,
+      replyTo: REPLY_TO,
       to: email,
       subject: `Welcome to DraftRoom, ${name} 👋`,
       html: `
@@ -131,6 +136,7 @@ export async function sendDirectOfferEmail({
   try {
     await resend.emails.send({
       from: FROM,
+      replyTo: REPLY_TO,
       to: drafterEmail,
       subject: `You have a new offer from ${clientName}`,
       html: `
