@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { NextResponse, type NextRequest } from 'next/server'
+import { sendCompleteProfileEmail } from '@/lib/email/resend'
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url)
@@ -24,8 +25,17 @@ export async function GET(request: NextRequest) {
         },
       }
     )
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
-    if (!error) {
+    const { error, data } = await supabase.auth.exchangeCodeForSession(code)
+    if (!error && data.user) {
+      const { count } = await supabase
+        .from('users')
+        .select('id', { count: 'exact', head: true })
+        .eq('id', data.user.id)
+
+      if (count === 0 && data.user.email) {
+        void sendCompleteProfileEmail({ email: data.user.email })
+      }
+
       const destination = role ? `${origin}${next}?role=${role}` : `${origin}${next}`
       return NextResponse.redirect(destination)
     }

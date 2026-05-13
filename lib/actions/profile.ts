@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
+import { logger } from '@/lib/logger'
 
 export async function updateProfile(
   _prev: { error: string } | null,
@@ -34,7 +35,10 @@ export async function updateProfile(
     .update({ name, phone, city, state })
     .eq('id', user.id)
 
-  if (userError) return { error: userError.message }
+  if (userError) {
+    logger.error('updateProfile failed', { step: 'users update', userId: user.id, error: userError.message })
+    return { error: userError.message }
+  }
 
   const avatarUrl = (formData.get('avatar_url') as string) || null
 
@@ -68,7 +72,10 @@ export async function updateProfile(
       })
       .eq('user_id', user.id)
 
-    if (profileError) return { error: profileError.message }
+    if (profileError) {
+      logger.error('updateProfile failed', { step: 'profiles update', userId: user.id, role: 'draftsman', error: profileError.message })
+      return { error: profileError.message }
+    }
   }
 
   if (userData.role === 'client') {
@@ -84,9 +91,13 @@ export async function updateProfile(
       })
       .eq('user_id', user.id)
 
-    if (profileError) return { error: profileError.message }
+    if (profileError) {
+      logger.error('updateProfile failed', { step: 'profiles update', userId: user.id, role: 'client', error: profileError.message })
+      return { error: profileError.message }
+    }
   }
 
+  logger.info('profile updated', { userId: user.id, role: userData.role })
   revalidatePath('/dashboard')
   revalidatePath('/profile/edit')
   redirect('/dashboard')

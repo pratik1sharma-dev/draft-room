@@ -1,6 +1,7 @@
 'use server'
 
 import { Resend } from 'resend'
+import { logger } from '@/lib/logger'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = 'DraftRoom <notifications@thedraftroom.in>'
@@ -12,6 +13,28 @@ function isConfigured() {
   return key && key !== 'your_resend_api_key'
 }
 
+export async function sendCompleteProfileEmail({ email }: { email: string }) {
+  if (!isConfigured()) { logger.warn('email skipped — RESEND_API_KEY not set', { fn: 'sendCompleteProfileEmail', to: email }); return }
+  try {
+    await resend.emails.send({
+      from: FROM,
+      replyTo: REPLY_TO,
+      to: email,
+      subject: 'One last step — complete your DraftRoom profile',
+      html: `
+        <p>Welcome to DraftRoom!</p>
+        <p>You're almost ready. Complete your profile so clients or drafters can find you and start working together.</p>
+        <p><a href="${BASE_URL}/onboarding">Complete your profile →</a></p>
+        <hr />
+        <p style="font-size:12px;color:#888">DraftRoom — India's drafting marketplace</p>
+      `,
+    })
+    logger.info('email sent', { fn: 'sendCompleteProfileEmail', to: email })
+  } catch (e) {
+    logger.error('email failed', { fn: 'sendCompleteProfileEmail', to: email, error: String(e) })
+  }
+}
+
 export async function sendApplicationReceivedEmail({
   clientEmail, clientName, drafterName, projectTitle, projectId,
 }: {
@@ -21,7 +44,7 @@ export async function sendApplicationReceivedEmail({
   projectTitle: string
   projectId: string
 }) {
-  if (!isConfigured()) return
+  if (!isConfigured()) { logger.warn('email skipped — RESEND_API_KEY not set', { fn: 'sendApplicationReceivedEmail', to: clientEmail }); return }
   try {
     await resend.emails.send({
       from: FROM,
@@ -36,7 +59,10 @@ export async function sendApplicationReceivedEmail({
         <p style="font-size:12px;color:#888">DraftRoom — India's drafting marketplace</p>
       `,
     })
-  } catch {}
+    logger.info('email sent', { fn: 'sendApplicationReceivedEmail', to: clientEmail, projectId })
+  } catch (e) {
+    logger.error('email failed', { fn: 'sendApplicationReceivedEmail', to: clientEmail, projectId, error: String(e) })
+  }
 }
 
 export async function sendApplicationAcceptedEmail({
@@ -47,7 +73,7 @@ export async function sendApplicationAcceptedEmail({
   projectTitle: string
   contractId: string
 }) {
-  if (!isConfigured()) return
+  if (!isConfigured()) { logger.warn('email skipped — RESEND_API_KEY not set', { fn: 'sendApplicationAcceptedEmail', to: drafterEmail }); return }
   try {
     await resend.emails.send({
       from: FROM,
@@ -62,7 +88,10 @@ export async function sendApplicationAcceptedEmail({
         <p style="font-size:12px;color:#888">DraftRoom — India's drafting marketplace</p>
       `,
     })
-  } catch {}
+    logger.info('email sent', { fn: 'sendApplicationAcceptedEmail', to: drafterEmail, contractId })
+  } catch (e) {
+    logger.error('email failed', { fn: 'sendApplicationAcceptedEmail', to: drafterEmail, contractId, error: String(e) })
+  }
 }
 
 export async function sendApplicationRejectedEmail({
@@ -72,7 +101,7 @@ export async function sendApplicationRejectedEmail({
   drafterName: string
   projectTitle: string
 }) {
-  if (!isConfigured()) return
+  if (!isConfigured()) { logger.warn('email skipped — RESEND_API_KEY not set', { fn: 'sendApplicationRejectedEmail', to: drafterEmail }); return }
   try {
     await resend.emails.send({
       from: FROM,
@@ -87,7 +116,10 @@ export async function sendApplicationRejectedEmail({
         <p style="font-size:12px;color:#888">DraftRoom — India's drafting marketplace</p>
       `,
     })
-  } catch {}
+    logger.info('email sent', { fn: 'sendApplicationRejectedEmail', to: drafterEmail })
+  } catch (e) {
+    logger.error('email failed', { fn: 'sendApplicationRejectedEmail', to: drafterEmail, error: String(e) })
+  }
 }
 
 export async function sendWelcomeEmail({
@@ -97,7 +129,7 @@ export async function sendWelcomeEmail({
   name: string
   role: 'client' | 'draftsman'
 }) {
-  if (!isConfigured()) return
+  if (!isConfigured()) { logger.warn('email skipped — RESEND_API_KEY not set', { fn: 'sendWelcomeEmail', to: email }); return }
   const isClient = role === 'client'
   try {
     await resend.emails.send({
@@ -120,7 +152,10 @@ export async function sendWelcomeEmail({
         <p style="font-size:12px;color:#888">DraftRoom — India's drafting marketplace</p>
       `,
     })
-  } catch {}
+    logger.info('email sent', { fn: 'sendWelcomeEmail', to: email, role })
+  } catch (e) {
+    logger.error('email failed', { fn: 'sendWelcomeEmail', to: email, role, error: String(e) })
+  }
 }
 
 export async function sendDirectOfferEmail({
@@ -132,7 +167,7 @@ export async function sendDirectOfferEmail({
   projectTitle: string
   contractId: string
 }) {
-  if (!isConfigured()) return
+  if (!isConfigured()) { logger.warn('email skipped — RESEND_API_KEY not set', { fn: 'sendDirectOfferEmail', to: drafterEmail }); return }
   try {
     await resend.emails.send({
       from: FROM,
@@ -147,5 +182,8 @@ export async function sendDirectOfferEmail({
         <p style="font-size:12px;color:#888">DraftRoom — India's drafting marketplace</p>
       `,
     })
-  } catch {}
+    logger.info('email sent', { fn: 'sendDirectOfferEmail', to: drafterEmail, contractId })
+  } catch (e) {
+    logger.error('email failed', { fn: 'sendDirectOfferEmail', to: drafterEmail, contractId, error: String(e) })
+  }
 }

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { createClient } from '@/lib/supabase/server'
 
-const BASE = 'https://draftroom.in'
+const BASE = 'https://www.thedraftroom.in'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [

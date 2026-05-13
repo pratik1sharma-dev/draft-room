@@ -8,9 +8,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Browse CAD Drafting Projects | DraftRoom',
     description: 'Open drafting projects across India. Apply as a verified drafter.',
-    url: 'https://draftroom.in/projects',
+    url: 'https://www.thedraftroom.in/projects',
   },
-  alternates: { canonical: 'https://draftroom.in/projects' },
+  alternates: { canonical: 'https://www.thedraftroom.in/projects' },
 }
 import { JobCard } from '@/components/marketplace/job-card'
 import { SkillFilter } from '@/components/marketplace/skill-filter'

@@ -30,9 +30,9 @@ export async function generateMetadata({
     openGraph: {
       title: `${job.title} | DraftRoom`,
       description,
-      url: `https://draftroom.in/projects/${id}`,
+      url: `https://www.thedraftroom.in/projects/${id}`,
     },
-    alternates: { canonical: `https://draftroom.in/projects/${id}` },
+    alternates: { canonical: `https://www.thedraftroom.in/projects/${id}` },
   }
 }
 

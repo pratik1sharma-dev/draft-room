@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { jobSchema } from '@/lib/validations/jobs'
+import { logger } from '@/lib/logger'
 
 export async function createJob(
   _prev: { error: string } | null,
@@ -45,7 +46,11 @@ export async function createJob(
     .select()
     .single()
 
-  if (error) return { error: error.message }
+  if (error) {
+    logger.error('createJob failed', { userId: user.id, error: error.message })
+    return { error: error.message }
+  }
+  logger.info('job created', { userId: user.id, jobId: job.id })
 
   const hireAfter = formData.get('hire_after') as string | null
   if (hireAfter) redirect(`/drafters/${hireAfter}/hire?job_id=${job.id}`)

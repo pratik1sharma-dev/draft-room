@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { clientOnboardingSchema, draftmanOnboardingSchema } from '@/lib/validations/onboarding'
 import { sendWelcomeEmail } from '@/lib/email/resend'
+import { logger } from '@/lib/logger'
 
 export async function completeClientOnboarding(
   _prev: { error: string } | null,
@@ -30,13 +31,20 @@ export async function completeClientOnboarding(
     id: user.id, email: user.email!, role: 'client',
     name, phone: phone ?? null, city, state,
   })
-  if (userError) return { error: userError.message }
+  if (userError) {
+    logger.error('onboarding failed', { step: 'users upsert', userId: user.id, role: 'client', error: userError.message })
+    return { error: userError.message }
+  }
 
   const { error: profileError } = await supabase.from('profiles').upsert({
     user_id: user.id, firm_name: firm_name ?? null, project_types,
   }, { onConflict: 'user_id' })
-  if (profileError) return { error: profileError.message }
+  if (profileError) {
+    logger.error('onboarding failed', { step: 'profiles upsert', userId: user.id, role: 'client', error: profileError.message })
+    return { error: profileError.message }
+  }
 
+  logger.info('onboarding complete', { userId: user.id, role: 'client' })
   void sendWelcomeEmail({ email: user.email!, name, role: 'client' })
 
   redirect('/dashboard')
@@ -69,14 +77,21 @@ export async function completeDraftmanOnboarding(
     id: user.id, email: user.email!, role: 'draftsman',
     name, phone: phone ?? null, city, state,
   })
-  if (userError) return { error: userError.message }
+  if (userError) {
+    logger.error('onboarding failed', { step: 'users upsert', userId: user.id, role: 'draftsman', error: userError.message })
+    return { error: userError.message }
+  }
 
   const { error: profileError } = await supabase.from('profiles').upsert({
     user_id: user.id, skills, hourly_rate, experience_years,
     linkedin_url: linkedin_url || null, availability: true,
   }, { onConflict: 'user_id' })
-  if (profileError) return { error: profileError.message }
+  if (profileError) {
+    logger.error('onboarding failed', { step: 'profiles upsert', userId: user.id, role: 'draftsman', error: profileError.message })
+    return { error: profileError.message }
+  }
 
+  logger.info('onboarding complete', { userId: user.id, role: 'draftsman' })
   void sendWelcomeEmail({ email: user.email!, name, role: 'draftsman' })
 
   redirect('/dashboard')

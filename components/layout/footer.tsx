@@ -10,10 +10,10 @@ export function Footer() {
             India's Drafting Room for Architects.
           </p>
           <a
-            href="mailto:hello@draftroom.in"
+            href="mailto:hello@thedraftroom.in"
             className="inline-flex items-center gap-2 mt-4 text-sm text-[var(--color-blueprint-accent)] hover:underline"
           >
-            hello@draftroom.in →
+            hello@thedraftroom.in →
           </a>
         </div>
 

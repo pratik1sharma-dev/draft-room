@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useState, useRef } from 'react'
 import { updateProfile } from '@/lib/actions/profile'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -15,7 +15,7 @@ const STATES = [
 
 interface ProfileFormProps {
   role: 'client' | 'draftsman'
-  user: { name: string; phone: string | null; city: string | null; state: string | null }
+  user: { name: string; phone: string | null; city: string | null; state: string | null; email: string }
   profile: {
     avatar_url: string | null
     bio: string | null
@@ -31,7 +31,45 @@ interface ProfileFormProps {
 }
 
 export function ProfileForm({ role, user, profile }: ProfileFormProps) {
+  const { email } = user
   const [state, formAction, isPending] = useActionState(updateProfile, null)
+  const [avatarUrl, setAvatarUrl] = useState(profile.avatar_url ?? '')
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  async function handleAvatarUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploadError('')
+    setUploading(true)
+    try {
+      const sigRes = await fetch('/api/cloudinary/signature')
+      const { timestamp, signature, folder, cloudName, apiKey } = await sigRes.json()
+
+      const body = new FormData()
+      body.append('file', file)
+      body.append('timestamp', String(timestamp))
+      body.append('signature', signature)
+      body.append('folder', folder)
+      body.append('api_key', apiKey)
+
+      const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        method: 'POST',
+        body,
+      })
+      const data = await uploadRes.json()
+      if (data.secure_url) {
+        setAvatarUrl(data.secure_url)
+      } else {
+        setUploadError('Upload failed — please try again.')
+      }
+    } catch {
+      setUploadError('Upload failed — please try again.')
+    } finally {
+      setUploading(false)
+    }
+  }
 
   return (
     <form action={formAction} className="space-y-8">
@@ -39,11 +77,43 @@ export function ProfileForm({ role, user, profile }: ProfileFormProps) {
       <div className="blueprint-card p-6 space-y-5">
         <p className="blueprint-label">// BASIC INFO</p>
 
+        <div className="mb-5">
+          <label className="block text-sm text-[var(--color-blueprint-text-secondary)] mb-1.5">Email</label>
+          <Input value={email} readOnly className="opacity-60 cursor-default" />
+        </div>
+
         <div className="grid md:grid-cols-2 gap-5">
           <div className="md:col-span-2">
-            <label className="block text-sm text-[var(--color-blueprint-text-secondary)] mb-1.5">Avatar URL</label>
-            <Input name="avatar_url" defaultValue={profile.avatar_url ?? ''} placeholder="https://..." />
-            <p className="text-[10px] text-[var(--color-blueprint-text-muted)] mt-1">Paste a link to your profile photo (e.g. from Cloudinary or LinkedIn)</p>
+            <label className="block text-sm text-[var(--color-blueprint-text-secondary)] mb-1.5">Profile photo</label>
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-full border border-[var(--color-blueprint-border-strong)] overflow-hidden shrink-0 bg-[var(--color-blueprint-surface)] flex items-center justify-center">
+                {avatarUrl
+                  ? <img src={avatarUrl} alt="Avatar preview" className="w-full h-full object-cover" />
+                  : <span className="text-2xl font-bold text-[var(--color-blueprint-text-muted)]">{user.name?.[0]?.toUpperCase() ?? '?'}</span>
+                }
+              </div>
+              <div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                  onChange={handleAvatarUpload}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                >
+                  {uploading ? 'Uploading...' : avatarUrl ? 'Change photo' : 'Upload photo'}
+                </Button>
+                <p className="text-[10px] text-[var(--color-blueprint-text-muted)] mt-1">JPG, PNG or WebP</p>
+                {uploadError && <p className="text-[10px] text-red-400 mt-1">{uploadError}</p>}
+              </div>
+            </div>
+            <input type="hidden" name="avatar_url" value={avatarUrl} />
           </div>
           <div>
             <label className="block text-sm text-[var(--color-blueprint-text-secondary)] mb-1.5">Full name</label>

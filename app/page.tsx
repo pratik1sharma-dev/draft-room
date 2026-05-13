@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Hire Verified CAD Drafters in India | DraftRoom',
     description: "India's first dedicated drafting marketplace. Scope agreed. Work starts.",
-    url: 'https://draftroom.in',
+    url: 'https://www.thedraftroom.in',
   },
 }
 

@@ -29,9 +29,9 @@ export async function generateMetadata({
     openGraph: {
       title: `${name} | DraftRoom`,
       description,
-      url: `https://draftroom.in/drafters/${id}`,
+      url: `https://www.thedraftroom.in/drafters/${id}`,
     },
-    alternates: { canonical: `https://draftroom.in/drafters/${id}` },
+    alternates: { canonical: `https://www.thedraftroom.in/drafters/${id}` },
   }
 }
 

@@ -45,7 +45,7 @@ export default async function ProfileEditPage() {
 
       <ProfileForm
         role={userData.role as 'client' | 'draftsman'}
-        user={{ name: userData.name, phone: userData.phone, city: userData.city, state: userData.state }}
+        user={{ name: userData.name, phone: userData.phone, city: userData.city, state: userData.state, email: user.email ?? '' }}
         profile={profile}
       />
     </main>

@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   description: "Learn why we built DraftRoom — India's first marketplace for architects to find and hire verified CAD drafters. Built by architects, for architects.",
   openGraph: {
     title: "About DraftRoom — India's Drafting Marketplace",
-    url: 'https://draftroom.in/about',
+    url: 'https://www.thedraftroom.in/about',
   },
-  alternates: { canonical: 'https://draftroom.in/about' },
+  alternates: { canonical: 'https://www.thedraftroom.in/about' },
 }
 
 export default function AboutPage() {

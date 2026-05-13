@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { ContractStatus, DISCUSSION_STATUSES, CANCELLABLE_STATUSES } from '@/lib/contracts/states'
+import { logger } from '@/lib/logger'
 
 function revalidateContract(contractId: string) {
   revalidatePath(`/contracts/${contractId}`)
@@ -20,7 +21,8 @@ export async function acceptOffer(contractId: string): Promise<{ error: string }
     .eq('draftsman_id', user.id)
     .eq('status', ContractStatus.OFFER_SENT)
 
-  if (error) return { error: error.message }
+  if (error) { logger.error('acceptOffer failed', { contractId, userId: user.id, error: error.message }); return { error: error.message } }
+  logger.info('offer accepted', { contractId, userId: user.id })
   revalidateContract(contractId)
   return null
 }
@@ -37,7 +39,8 @@ export async function declineOffer(contractId: string): Promise<{ error: string 
     .eq('draftsman_id', user.id)
     .eq('status', ContractStatus.OFFER_SENT)
 
-  if (error) return { error: error.message }
+  if (error) { logger.error('declineOffer failed', { contractId, userId: user.id, error: error.message }); return { error: error.message } }
+  logger.info('offer declined', { contractId, userId: user.id })
   revalidateContract(contractId)
   return null
 }
@@ -75,7 +78,7 @@ export async function sendMessage(
     .from('messages')
     .insert({ contract_id: contractId, sender_id: user.id, content: content.trim() })
 
-  if (msgError) return { error: msgError.message }
+  if (msgError) { logger.error('sendMessage failed', { contractId, userId: user.id, error: msgError.message }); return { error: msgError.message } }
 
   const nextStatus = isClient ? ContractStatus.DRAFTSMAN_TURN : ContractStatus.CLIENT_TURN
   const updateData: Record<string, unknown> = { status: nextStatus }
@@ -145,8 +148,9 @@ export async function proposeTerms(
     .eq('id', contractId)
     .in('status', DISCUSSION_STATUSES)
 
-  if (error) return { error: error.message }
-  if (count === 0) return { error: 'Unable to update terms at this stage' }
+  if (error) { logger.error('proposeTerms failed', { contractId, userId: user.id, error: error.message }); return { error: error.message } }
+  if (count === 0) { logger.warn('proposeTerms blocked — wrong status', { contractId, userId: user.id }); return { error: 'Unable to update terms at this stage' } }
+  logger.info('terms proposed', { contractId, userId: user.id, amount })
 
   const isCounter = !!contract.proposed_amount
   const label = isCounter ? 'Counter-proposal' : 'Proposal'
@@ -203,7 +207,8 @@ export async function agreeToTerms(contractId: string): Promise<{ error: string 
     })
     .eq('id', contractId)
 
-  if (error) return { error: error.message }
+  if (error) { logger.error('agreeToTerms failed', { contractId, userId: user.id, error: error.message }); return { error: error.message } }
+  logger.info('terms agreed', { contractId, userId: user.id })
 
   await supabase.from('messages').insert({
     contract_id: contractId,

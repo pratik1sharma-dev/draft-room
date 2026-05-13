@@ -9,6 +9,7 @@ import {
   sendApplicationRejectedEmail,
   sendDirectOfferEmail,
 } from '@/lib/email/resend'
+import { logger } from '@/lib/logger'
 
 export async function applyToJob(
   _prev: { error: string } | null,
@@ -44,8 +45,10 @@ export async function applyToJob(
 
   if (error) {
     if (error.code === '23505') return { error: 'You have already applied to this job' }
+    logger.error('applyToJob failed', { userId: user.id, jobId, error: error.message })
     return { error: error.message }
   }
+  logger.info('application submitted', { userId: user.id, jobId })
 
   const [{ data: job }, { data: drafter }] = await Promise.all([
     supabase.from('jobs').select('title, client_id, users!jobs_client_id_fkey(name, email)').eq('id', jobId).single(),
@@ -84,7 +87,10 @@ export async function acceptApplication(applicationId: string, jobId: string): P
     .update({ status: 'accepted' })
     .eq('id', applicationId)
 
-  if (acceptError) return { error: acceptError.message }
+  if (acceptError) {
+    logger.error('acceptApplication failed', { step: 'accept', applicationId, error: acceptError.message })
+    return { error: acceptError.message }
+  }
 
   await supabase
     .from('applications')
@@ -100,7 +106,11 @@ export async function acceptApplication(applicationId: string, jobId: string): P
     status: 'client_turn',
   })
 
-  if (contractError) return { error: contractError.message }
+  if (contractError) {
+    logger.error('acceptApplication failed', { step: 'contract insert', applicationId, jobId, error: contractError.message })
+    return { error: contractError.message }
+  }
+  logger.info('application accepted', { applicationId, jobId })
 
   const [{ data: contract }, { data: drafter }, { data: job }] = await Promise.all([
     supabase.from('contracts').select('id').eq('job_id', jobId).eq('draftsman_id', application.draftsman_id).single(),
@@ -138,7 +148,11 @@ export async function rejectApplication(applicationId: string): Promise<{ error:
     .update({ status: 'rejected' })
     .eq('id', applicationId)
 
-  if (error) return { error: error.message }
+  if (error) {
+    logger.error('rejectApplication failed', { applicationId, error: error.message })
+    return { error: error.message }
+  }
+  logger.info('application rejected', { applicationId })
 
   if (application) {
     const [{ data: drafter }, { data: job }] = await Promise.all([

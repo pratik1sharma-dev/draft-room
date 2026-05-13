@@ -14,6 +14,6 @@ export default function robots(): MetadataRoute.Robots {
         '/drafters/*/hire',
       ],
     },
-    sitemap: 'https://draftroom.in/sitemap.xml',
+    sitemap: 'https://www.thedraftroom.in/sitemap.xml',
   }
 }

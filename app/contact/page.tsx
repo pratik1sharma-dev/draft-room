@@ -8,9 +8,9 @@ export const metadata: Metadata = {
   description: 'Get in touch with the DraftRoom team for questions, feedback, or partnership enquiries. We read everything.',
   openGraph: {
     title: 'Contact DraftRoom',
-    url: 'https://draftroom.in/contact',
+    url: 'https://www.thedraftroom.in/contact',
   },
-  alternates: { canonical: 'https://draftroom.in/contact' },
+  alternates: { canonical: 'https://www.thedraftroom.in/contact' },
 }
 
 export default function ContactPage() {
@@ -25,7 +25,7 @@ export default function ContactPage() {
       </p>
 
       <form
-        action="mailto:hello@draftroom.in"
+        action="mailto:hello@thedraftroom.in"
         method="GET"
         className="space-y-5 blueprint-card p-6"
       >
@@ -55,8 +55,8 @@ export default function ContactPage() {
 
       <div className="mt-8 space-y-2 text-sm text-[var(--color-blueprint-text-secondary)]">
         <p>Or reach us directly:</p>
-        <a href="mailto:hello@draftroom.in" className="text-[var(--color-blueprint-accent)] hover:underline block">
-          hello@draftroom.in
+        <a href="mailto:hello@thedraftroom.in" className="text-[var(--color-blueprint-accent)] hover:underline block">
+          hello@thedraftroom.in
         </a>
         <a href="https://discord.gg/draftroom" target="_blank" rel="noopener noreferrer" className="text-[var(--color-blueprint-accent)] hover:underline block">
           Discord community →
