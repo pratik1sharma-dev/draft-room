@@ -45,6 +45,12 @@ export default function SignupPage() {
       setLoading(false)
       return
     }
+    // Supabase returns empty identities for already-registered emails
+    if (data.user && data.user.identities?.length === 0) {
+      setError('An account with this email already exists. Try signing in instead.')
+      setLoading(false)
+      return
+    }
     if (data.session) {
       router.push(`/onboarding?role=${role}`)
       router.refresh()
