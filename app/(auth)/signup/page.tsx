@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
@@ -18,19 +18,26 @@ export default function SignupPage() {
   const [role, setRole] = useState<Role>(initialRole)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [checkEmail, setCheckEmail] = useState(false)
   const router = useRouter()
   const supabase = createClient()
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) router.replace('/dashboard')
+    })
+  }, [])
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError('')
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: { role },
-        emailRedirectTo: `${window.location.origin}/api/auth/callback?next=/onboarding`,
+        emailRedirectTo: `${window.location.origin}/api/auth/callback?next=/onboarding&role=${role}`,
       },
     })
     if (error) {
@@ -38,7 +45,13 @@ export default function SignupPage() {
       setLoading(false)
       return
     }
-    router.push(`/onboarding?role=${role}`)
+    if (data.session) {
+      router.push(`/onboarding?role=${role}`)
+      router.refresh()
+    } else {
+      setCheckEmail(true)
+      setLoading(false)
+    }
   }
 
   async function handleGoogleSignup() {
@@ -48,6 +61,28 @@ export default function SignupPage() {
         redirectTo: `${window.location.origin}/api/auth/callback?next=/onboarding&role=${role}`,
       },
     })
+  }
+
+  if (checkEmail) {
+    return (
+      <div className="text-center">
+        <div className="w-12 h-12 rounded-full bg-[var(--color-blueprint-accent)]/10 border border-[var(--color-blueprint-accent)]/30 flex items-center justify-center mx-auto mb-4">
+          <span className="text-xl">✉️</span>
+        </div>
+        <h1 className="text-xl font-bold text-[var(--color-blueprint-text-primary)] mb-2">Check your inbox</h1>
+        <p className="text-sm text-[var(--color-blueprint-text-secondary)] mb-1">
+          We sent a confirmation link to
+        </p>
+        <p className="text-sm font-medium text-[var(--color-blueprint-text-primary)] mb-6">{email}</p>
+        <p className="text-xs text-[var(--color-blueprint-text-muted)]">
+          Click the link in the email to activate your account, then come back to sign in.
+        </p>
+        <p className="text-center text-[var(--color-blueprint-text-secondary)] text-sm mt-8">
+          Already confirmed?{' '}
+          <Link href="/login" className="text-[var(--color-blueprint-accent)] hover:underline">Sign in</Link>
+        </p>
+      </div>
+    )
   }
 
   return (

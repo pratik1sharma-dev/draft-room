@@ -32,11 +32,18 @@ export async function GET(request: NextRequest) {
         .select('id', { count: 'exact', head: true })
         .eq('id', data.user.id)
 
-      if (count === 0 && data.user.email) {
+      const isNewUser = count === 0
+
+      if (isNewUser && data.user.email) {
         void sendCompleteProfileEmail({ email: data.user.email })
       }
 
-      const destination = role ? `${origin}${next}?role=${role}` : `${origin}${next}`
+      // Returning users skip onboarding and go straight to dashboard
+      const destination = isNewUser && role
+        ? `${origin}${next}?role=${role}`
+        : isNewUser
+        ? `${origin}${next}`
+        : `${origin}/dashboard`
       return NextResponse.redirect(destination)
     }
   }

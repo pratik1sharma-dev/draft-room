@@ -17,7 +17,7 @@ const INDIA_STATES = [
 
 function OnboardingForm() {
   const searchParams = useSearchParams()
-  const role = searchParams.get('role') === 'drafter' ? 'drafter' : 'client'
+  const role = searchParams.get('role') === 'draftsman' ? 'draftsman' : 'client'
   const action = role === 'client' ? completeClientOnboarding : completeDraftmanOnboarding
   const [state, formAction, isPending] = useActionState(action, null)
 
@@ -25,7 +25,7 @@ function OnboardingForm() {
     <form action={formAction} className="space-y-5">
       <div>
         <p className="blueprint-label mb-2">
-          {role === 'client' ? 'Client Profile' : 'Drafter Profile'}
+          {role === 'draftsman' ? 'Drafter Profile' : 'Client Profile'}
         </p>
         <h1 className="text-2xl font-bold text-[var(--color-blueprint-text-primary)]">
           Complete your profile
@@ -67,7 +67,7 @@ function OnboardingForm() {
         </>
       )}
 
-      {role === 'drafter' && (
+      {role === 'draftsman' && (
         <>
           <div>
             <p className="text-sm text-[var(--color-blueprint-text-secondary)] mb-2">Skills (select all that apply)</p>

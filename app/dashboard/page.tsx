@@ -45,6 +45,14 @@ export default async function DashboardPage() {
         </span>
       </div>
 
+      {!user.email_confirmed_at && (
+        <div className="mb-4 p-4 rounded-lg border border-blue-500/30 bg-blue-500/5 flex items-center justify-between gap-4 flex-wrap">
+          <p className="text-sm text-blue-400">
+            Please confirm your email address — check your inbox for a link from DraftRoom.
+          </p>
+        </div>
+      )}
+
       {isProfileIncomplete && (
         <div className="mb-6 p-4 rounded-lg border border-amber-500/30 bg-amber-500/5 flex items-center justify-between gap-4 flex-wrap">
           <p className="text-sm text-amber-400">
